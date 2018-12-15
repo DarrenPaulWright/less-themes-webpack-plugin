@@ -57,7 +57,7 @@ class ThemesPlugin {
 		const addLoaders = () => {
 			compiler.options.module.rules.push({
 				test: /\.js/,
-				loader: resolve(__dirname, 'webpack.themesLoader.js'),
+				loader: resolve(__dirname, 'loader.js'),
 				enforce: 'pre',
 				options: {
 					themes: themes
