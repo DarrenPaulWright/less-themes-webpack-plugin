@@ -10,7 +10,6 @@ const NEW_LINE = '\n';
 const HAS_IMPORT = /import '.\/[^.]+.less';/;
 const LESS_IMPORT = /@import[^']+'(.+.less)';/g;
 const IMPORT_FILE = /'.\/([^']+)';/;
-const TMP_PATH = resolve(__dirname, '.tmp');
 
 const firstFiles = {};
 const tempFiles = [];
@@ -33,6 +32,7 @@ module.exports = function(content) {
 	const baseFileName = basename(this.resourcePath, JS_EXT);
 	const dirPath = dirname(this.resourcePath);
 	const entry = findEntry(this._module);
+	const TMP_PATH = resolve(this.rootContext, '.tmp');
 	const contextPath = resolve(TMP_PATH, relative(this.rootContext, dirPath));
 
 	const normalize = (string) => {
