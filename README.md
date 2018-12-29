@@ -1,4 +1,7 @@
 # less-themes-webpack-plugin
+[![npm][npm]][npm-url]
+[![deps][deps]][deps-url]
+[![size][size]][size-url]
 
 A webpack plugin for generating multiple themed css files from less.
 
@@ -92,3 +95,13 @@ This is passed directly into MiniCssExtractPlugin.
 
 Defines which files to import for each different theme. Can handle any amount of nesting.
 
+## License
+
+[MIT](./LICENSE.md)
+
+[npm]: https://img.shields.io/npm/v/less-themes-webpack-plugin.svg
+[npm-url]: https://npmjs.com/package/less-themes-webpack-plugin
+[deps]: https://david-dm.org/darrenpaulwright/less-themes-webpack-plugin.svg
+[deps-url]: https://david-dm.org/darrenpaulwright/less-themes-webpack-plugin
+[size]: https://packagephobia.now.sh/badge?p=less-themes-webpack-plugin
+[size-url]: https://packagephobia.now.sh/result?p=less-themes-webpack-plugin
