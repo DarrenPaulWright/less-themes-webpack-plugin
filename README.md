@@ -14,7 +14,14 @@ npm install less-themes-webpack-plugin --save-dev
 
 ## Compatibility
 
-Requires webpack >=4 and ES6.
+Requires webpack >=4 and ES6. Since this library uses postcss-loader you'll need a postcss.config.js with a minimum of:
+```javascript
+module.exports = {
+	plugins: [
+		require('autoprefixer')
+	]
+};
+```
 
 ## Usage
 
