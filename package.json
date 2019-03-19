@@ -6,7 +6,6 @@
   "dependencies": {
     "css-loader": "^2.0.1",
     "less-loader": "^4.1.0",
-    "lodash": "^4.17.11",
     "mini-css-extract-plugin": "^0.5.0",
     "node-cleanup": "^2.1.2",
     "postcss-loader": "^3.0.0"

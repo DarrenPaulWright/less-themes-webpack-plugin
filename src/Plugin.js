@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const {resolve} = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
@@ -10,6 +9,9 @@ const defaultOptions = {
 	themesPath: '',
 	themes: {}
 };
+
+const forOwn = (object, callback) => !(!object || !Object.keys(object)
+	.some((key) => key in object ? callback(object[key], key) : false));
 
 class ThemesPlugin {
 
@@ -39,16 +41,16 @@ class ThemesPlugin {
 		};
 
 		const processAppend = (data, themeName) => {
-			if (_.isString(data)) {
+			if (typeof data === 'string') {
 				addImport(data, themeName);
 			}
-			else if (_.isArray(data)) {
-				_.each(data, (item) => {
+			else if (Array.isArray(data)) {
+				data.forEach((item) => {
 					processAppend(item, themeName);
 				});
 			}
-			else if (_.isPlainObject(data)) {
-				_.forOwn(data, (value, key) => {
+			else if (data && data.constructor === Object) {
+				forOwn(data, (value, key) => {
 					processAppend(value, themeName + '.' + key);
 				});
 			}
@@ -89,7 +91,7 @@ class ThemesPlugin {
 				]
 			});
 
-			_.forOwn(themes, (files, themeName) => {
+			forOwn(themes, (files, themeName) => {
 				compiler.options.optimization.splitChunks.cacheGroups[themeName] = {
 					test: new RegExp('\.' + themeName + '\.less$'),
 					name: themeName,
@@ -105,11 +107,11 @@ class ThemesPlugin {
 			return html.replace(search, '');
 		};
 
-		_.forOwn(this.options.themes, (theme, themeName) => {
+		forOwn(this.options.themes, (theme, themeName) => {
 			processAppend(theme, themeName);
 		});
 
-		_.forOwn(themes, (files, themeName) => {
+		forOwn(themes, (files, themeName) => {
 			if (!primaryThemeName) {
 				primaryThemeName = themeName;
 			}
@@ -121,7 +123,7 @@ class ThemesPlugin {
 
 		compiler.hooks.compilation.tap(THEME_NAME, function(compilation) {
 			compilation.hooks.htmlWebpackPluginAfterHtmlProcessing.tapAsync(THEME_NAME, function(data, callback) {
-				_.forOwn(themes, (files, themeName) => {
+				forOwn(themes, (files, themeName) => {
 					if (themeName !== primaryThemeName) {
 						data.html = stripLink(data.html, themeName);
 					}

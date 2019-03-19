@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const {basename, dirname, relative, resolve} = require('path');
 const fs = require('fs');
 const nodeCleanup = require('node-cleanup');
@@ -21,8 +20,11 @@ function findEntry(mod) {
 	return mod.resource;
 }
 
+const forOwn = (object, callback) => !(!object || !Object.keys(object)
+	.some((key) => key in object ? callback(object[key], key) : false));
+
 nodeCleanup(() => {
-	_.each(tempFiles, (path) => {
+	tempFiles.forEach((path) => {
 		fs.unlinkSync(path);
 	});
 });
@@ -56,9 +58,9 @@ module.exports = function(content) {
 		const tmpFileDir = dirname(tmpFilePath);
 		let fileContent = buildLessImport(relative(tmpFileDir, importFilePath), true);
 
-		fileContent += _.join(_.map(themeFiles, (filePath) => {
+		fileContent += themeFiles.map((filePath) => {
 			return buildLessImport(relative(tmpFileDir, filePath), firstFiles[entry] === this.resourcePath);
-		}), '');
+		}).join('');
 
 		return fileContent;
 	};
@@ -107,7 +109,7 @@ module.exports = function(content) {
 			firstFiles[entry] = this.resourcePath;
 		}
 
-		_.forOwn(options.themes, (themeFiles, themeName) => {
+		forOwn(options.themes, (themeFiles, themeName) => {
 			addAsset(themeFiles, themeName, importFilePath);
 		});
 	}
