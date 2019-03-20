@@ -1,4 +1,5 @@
 const {resolve} = require('path');
+const fs = require('fs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const THEME_NAME = 'themes-plugin';
@@ -30,11 +31,15 @@ class ThemesPlugin {
 				themes[themeName] = [];
 			}
 
-			if (filename.indexOf(LESS_EXT) === -1) {
+			if (filename.indexOf('.') === -1) {
 				filename += LESS_EXT;
 			}
 
 			filePath = resolve(themesPath, filename);
+
+			if (!fs.existsSync(filePath)) {
+				throw new Error('Theme file not found: ' + filePath);
+			}
 
 			themes[themeName].push(filePath);
 		};

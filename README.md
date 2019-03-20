@@ -93,7 +93,7 @@ This is passed directly into MiniCssExtractPlugin.
 
 `object`, required.
 
-Defines which files to import for each different theme. Can handle any amount of nesting.
+Defines which files to import for each different theme. Can handle any amount of nesting. The file extension is not necessary in the file name if the actual file has an extension of `.less`.
 
 ## License
 
