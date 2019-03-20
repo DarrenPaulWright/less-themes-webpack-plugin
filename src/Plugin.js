@@ -23,7 +23,6 @@ class ThemesPlugin {
 		const themesPath = (this.options.themesPath.charAt(0) === '.') ? resolve(process.cwd(), this.options.themesPath) : this.options.themesPath;
 		const themes = {};
 		let filePath;
-		const excludeChunks = [];
 		let primaryThemeName;
 
 		const addImport = (filename, themeName) => {
@@ -121,9 +120,7 @@ class ThemesPlugin {
 			if (!primaryThemeName) {
 				primaryThemeName = themeName;
 			}
-			excludeChunks.push(themeName);
 		});
-		excludeChunks.shift();
 
 		compiler.hooks.environment.tap(THEME_NAME, addLoaders);
 
