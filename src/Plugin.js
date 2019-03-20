@@ -79,8 +79,14 @@ class ThemesPlugin {
 						loader: 'css-loader', options: {
 							sourceMap: this.options.sourceMap || false
 						}
-					},
-					'postcss-loader', {
+					}, {
+						loader: 'postcss-loader',
+						options: {
+							config: {
+								path: './'
+							}
+						}
+					}, {
 						loader: 'less-loader',
 						options: {
 							javascriptEnabled: true,

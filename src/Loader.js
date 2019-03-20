@@ -1,6 +1,8 @@
 const {basename, dirname, relative, resolve} = require('path');
 const fs = require('fs');
-const nodeCleanup = require('node-cleanup');
+const temp = require('temp');
+
+temp.track();
 
 const JS_EXT = '.js';
 const LESS_EXT = '.less';
@@ -11,7 +13,7 @@ const LESS_IMPORT = /@import[^']+'(.+.less)';/g;
 const IMPORT_FILE = /'.\/([^']+)';/;
 
 const firstFiles = {};
-const tempFiles = [];
+const TMP_PATH = temp.mkdirSync();
 
 function findEntry(mod) {
 	if (mod.reasons.length > 0 && mod.reasons[0].module && mod.reasons[0].module.resource) {
@@ -23,18 +25,11 @@ function findEntry(mod) {
 const forOwn = (object, callback) => !(!object || !Object.keys(object)
 	.some((key) => key in object ? callback(object[key], key) : false));
 
-nodeCleanup(() => {
-	tempFiles.forEach((path) => {
-		fs.unlinkSync(path);
-	});
-});
-
 module.exports = function(content) {
 	const options = this.query;
 	const baseFileName = basename(this.resourcePath, JS_EXT);
 	const dirPath = dirname(this.resourcePath);
 	const entry = findEntry(this._module);
-	const TMP_PATH = resolve(this.rootContext, '.tmp');
 	const contextPath = resolve(TMP_PATH, relative(this.rootContext, dirPath));
 
 	const normalize = (string) => {
@@ -87,8 +82,6 @@ module.exports = function(content) {
 	const addAsset = (themeFiles, themeName, importFilePath) => {
 		const themeFileName = baseFileName + DOT + themeName + LESS_EXT;
 		const filePath = resolve(contextPath, themeFileName);
-
-		tempFiles.push(filePath);
 
 		ensureDirectoryExists(filePath);
 		fs.writeFileSync(filePath, buildLessImports(themeFiles, filePath, importFilePath));
