@@ -14,7 +14,7 @@ npm install less-themes-webpack-plugin --save-dev
 
 ## Compatibility
 
-Requires webpack >=4 and ES6.
+Requires webpack >=4 and node >= 8.5.0. Since this library uses [postcss-loader](https://github.com/postcss/postcss-loader) you must have a postcss.config.js in the root of your project for this plugin to work.
 
 ## Usage
 
@@ -93,7 +93,7 @@ This is passed directly into MiniCssExtractPlugin.
 
 `object`, required.
 
-Defines which files to import for each different theme. Can handle any amount of nesting.
+Defines which files to import for each different theme. Can handle any amount of nesting. The file extension is not necessary in the file name if the actual file has an extension of `.less`.
 
 ## License
 

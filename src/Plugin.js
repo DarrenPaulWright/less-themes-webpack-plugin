@@ -1,5 +1,5 @@
-const _ = require('lodash');
 const {resolve} = require('path');
+const fs = require('fs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const THEME_NAME = 'themes-plugin';
@@ -12,7 +12,6 @@ const defaultOptions = {
 };
 
 class ThemesPlugin {
-
 	constructor(options) {
 		this.options = Object.assign({}, defaultOptions, options);
 	}
@@ -20,37 +19,41 @@ class ThemesPlugin {
 	apply(compiler) {
 		const themesPath = (this.options.themesPath.charAt(0) === '.') ? resolve(process.cwd(), this.options.themesPath) : this.options.themesPath;
 		const themes = {};
+		const themeNames = [];
 		let filePath;
-		const excludeChunks = [];
-		let primaryThemeName;
 
 		const addImport = (filename, themeName) => {
 			if (!themes[themeName]) {
 				themes[themeName] = [];
+				themeNames.push(themeName);
 			}
 
-			if (filename.indexOf(LESS_EXT) === -1) {
+			if (filename.indexOf('.') === -1) {
 				filename += LESS_EXT;
 			}
 
 			filePath = resolve(themesPath, filename);
 
+			if (!fs.existsSync(filePath)) {
+				throw new Error('Theme file not found: ' + filePath);
+			}
+
 			themes[themeName].push(filePath);
 		};
 
 		const processAppend = (data, themeName) => {
-			if (_.isString(data)) {
+			if (typeof data === 'string') {
 				addImport(data, themeName);
 			}
-			else if (_.isArray(data)) {
-				_.each(data, (item) => {
+			else if (Array.isArray(data)) {
+				data.forEach((item) => {
 					processAppend(item, themeName);
 				});
 			}
-			else if (_.isPlainObject(data)) {
-				_.forOwn(data, (value, key) => {
-					processAppend(value, themeName + '.' + key);
-				});
+			else if (data && data.constructor === Object) {
+				for (let key in data) {
+					processAppend(data[key], themeName + '.' + key);
+				}
 			}
 		};
 
@@ -77,8 +80,14 @@ class ThemesPlugin {
 						loader: 'css-loader', options: {
 							sourceMap: this.options.sourceMap || false
 						}
-					},
-					'postcss-loader', {
+					}, {
+						loader: 'postcss-loader',
+						options: {
+							config: {
+								path: './'
+							}
+						}
+					}, {
 						loader: 'less-loader',
 						options: {
 							javascriptEnabled: true,
@@ -89,7 +98,7 @@ class ThemesPlugin {
 				]
 			});
 
-			_.forOwn(themes, (files, themeName) => {
+			themeNames.forEach((themeName) => {
 				compiler.options.optimization.splitChunks.cacheGroups[themeName] = {
 					test: new RegExp('\.' + themeName + '\.less$'),
 					name: themeName,
@@ -105,27 +114,19 @@ class ThemesPlugin {
 			return html.replace(search, '');
 		};
 
-		_.forOwn(this.options.themes, (theme, themeName) => {
-			processAppend(theme, themeName);
-		});
-
-		_.forOwn(themes, (files, themeName) => {
-			if (!primaryThemeName) {
-				primaryThemeName = themeName;
-			}
-			excludeChunks.push(themeName);
-		});
-		excludeChunks.shift();
+		for (let themeName in this.options.themes) {
+			processAppend(this.options.themes[themeName], themeName);
+		}
 
 		compiler.hooks.environment.tap(THEME_NAME, addLoaders);
 
 		compiler.hooks.compilation.tap(THEME_NAME, function(compilation) {
 			compilation.hooks.htmlWebpackPluginAfterHtmlProcessing.tapAsync(THEME_NAME, function(data, callback) {
-				_.forOwn(themes, (files, themeName) => {
-					if (themeName !== primaryThemeName) {
+				themeNames.forEach((themeName, index) => {
+					if (index) {
 						data.html = stripLink(data.html, themeName);
 					}
-				});
+				})
 
 				callback(null, data);
 			});

@@ -1,18 +1,18 @@
-const _ = require('lodash');
 const {basename, dirname, relative, resolve} = require('path');
 const fs = require('fs');
-const nodeCleanup = require('node-cleanup');
+const temp = require('temp');
+
+temp.track();
 
 const JS_EXT = '.js';
 const LESS_EXT = '.less';
 const DOT = '.';
 const NEW_LINE = '\n';
 const HAS_IMPORT = /import '.\/[^.]+.less';/;
-const LESS_IMPORT = /@import[^']+'(.+.less)';/g;
 const IMPORT_FILE = /'.\/([^']+)';/;
 
 const firstFiles = {};
-const tempFiles = [];
+const TMP_PATH = temp.mkdirSync();
 
 function findEntry(mod) {
 	if (mod.reasons.length > 0 && mod.reasons[0].module && mod.reasons[0].module.resource) {
@@ -21,18 +21,11 @@ function findEntry(mod) {
 	return mod.resource;
 }
 
-nodeCleanup(() => {
-	_.each(tempFiles, (path) => {
-		fs.unlinkSync(path);
-	});
-});
-
 module.exports = function(content) {
 	const options = this.query;
 	const baseFileName = basename(this.resourcePath, JS_EXT);
 	const dirPath = dirname(this.resourcePath);
 	const entry = findEntry(this._module);
-	const TMP_PATH = resolve(this.rootContext, '.tmp');
 	const contextPath = resolve(TMP_PATH, relative(this.rootContext, dirPath));
 
 	const normalize = (string) => {
@@ -56,9 +49,9 @@ module.exports = function(content) {
 		const tmpFileDir = dirname(tmpFilePath);
 		let fileContent = buildLessImport(relative(tmpFileDir, importFilePath), true);
 
-		fileContent += _.join(_.map(themeFiles, (filePath) => {
+		fileContent += themeFiles.map((filePath) => {
 			return buildLessImport(relative(tmpFileDir, filePath), firstFiles[entry] === this.resourcePath);
-		}), '');
+		}).join('');
 
 		return fileContent;
 	};
@@ -74,19 +67,15 @@ module.exports = function(content) {
 	const ensureDirectoryExists = (filePath) => {
 		const dir = dirname(filePath);
 
-		if (fs.existsSync(dir)) {
-			return true;
+		if (!fs.existsSync(dir)) {
+			ensureDirectoryExists(dir);
+			fs.mkdirSync(dir);
 		}
-		ensureDirectoryExists(dir);
-
-		fs.mkdirSync(dir);
 	};
 
 	const addAsset = (themeFiles, themeName, importFilePath) => {
 		const themeFileName = baseFileName + DOT + themeName + LESS_EXT;
 		const filePath = resolve(contextPath, themeFileName);
-
-		tempFiles.push(filePath);
 
 		ensureDirectoryExists(filePath);
 		fs.writeFileSync(filePath, buildLessImports(themeFiles, filePath, importFilePath));
@@ -107,9 +96,9 @@ module.exports = function(content) {
 			firstFiles[entry] = this.resourcePath;
 		}
 
-		_.forOwn(options.themes, (themeFiles, themeName) => {
-			addAsset(themeFiles, themeName, importFilePath);
-		});
+		for (let themeName in options.themes) {
+			addAsset(options.themes[themeName], themeName, importFilePath);
+		}
 	}
 
 	return content;
