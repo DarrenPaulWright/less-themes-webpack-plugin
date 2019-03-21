@@ -9,7 +9,6 @@ const LESS_EXT = '.less';
 const DOT = '.';
 const NEW_LINE = '\n';
 const HAS_IMPORT = /import '.\/[^.]+.less';/;
-const LESS_IMPORT = /@import[^']+'(.+.less)';/g;
 const IMPORT_FILE = /'.\/([^']+)';/;
 
 const firstFiles = {};
@@ -21,9 +20,6 @@ function findEntry(mod) {
 	}
 	return mod.resource;
 }
-
-const forOwn = (object, callback) => !(!object || !Object.keys(object)
-	.some((key) => key in object ? callback(object[key], key) : false));
 
 module.exports = function(content) {
 	const options = this.query;
@@ -71,12 +67,10 @@ module.exports = function(content) {
 	const ensureDirectoryExists = (filePath) => {
 		const dir = dirname(filePath);
 
-		if (fs.existsSync(dir)) {
-			return true;
+		if (!fs.existsSync(dir)) {
+			ensureDirectoryExists(dir);
+			fs.mkdirSync(dir);
 		}
-		ensureDirectoryExists(dir);
-
-		fs.mkdirSync(dir);
 	};
 
 	const addAsset = (themeFiles, themeName, importFilePath) => {
@@ -102,9 +96,9 @@ module.exports = function(content) {
 			firstFiles[entry] = this.resourcePath;
 		}
 
-		forOwn(options.themes, (themeFiles, themeName) => {
-			addAsset(themeFiles, themeName, importFilePath);
-		});
+		for (let themeName in options.themes) {
+			addAsset(options.themes[themeName], themeName, importFilePath);
+		}
 	}
 
 	return content;

@@ -11,11 +11,7 @@ const defaultOptions = {
 	themes: {}
 };
 
-const forOwn = (object, callback) => !(!object || !Object.keys(object)
-	.some((key) => key in object ? callback(object[key], key) : false));
-
 class ThemesPlugin {
-
 	constructor(options) {
 		this.options = Object.assign({}, defaultOptions, options);
 	}
@@ -23,12 +19,13 @@ class ThemesPlugin {
 	apply(compiler) {
 		const themesPath = (this.options.themesPath.charAt(0) === '.') ? resolve(process.cwd(), this.options.themesPath) : this.options.themesPath;
 		const themes = {};
+		const themeNames = [];
 		let filePath;
-		let primaryThemeName;
 
 		const addImport = (filename, themeName) => {
 			if (!themes[themeName]) {
 				themes[themeName] = [];
+				themeNames.push(themeName);
 			}
 
 			if (filename.indexOf('.') === -1) {
@@ -54,9 +51,9 @@ class ThemesPlugin {
 				});
 			}
 			else if (data && data.constructor === Object) {
-				forOwn(data, (value, key) => {
-					processAppend(value, themeName + '.' + key);
-				});
+				for (let key in data) {
+					processAppend(data[key], themeName + '.' + key);
+				}
 			}
 		};
 
@@ -101,7 +98,7 @@ class ThemesPlugin {
 				]
 			});
 
-			forOwn(themes, (files, themeName) => {
+			themeNames.forEach((themeName) => {
 				compiler.options.optimization.splitChunks.cacheGroups[themeName] = {
 					test: new RegExp('\.' + themeName + '\.less$'),
 					name: themeName,
@@ -117,25 +114,19 @@ class ThemesPlugin {
 			return html.replace(search, '');
 		};
 
-		forOwn(this.options.themes, (theme, themeName) => {
-			processAppend(theme, themeName);
-		});
-
-		forOwn(themes, (files, themeName) => {
-			if (!primaryThemeName) {
-				primaryThemeName = themeName;
-			}
-		});
+		for (let themeName in this.options.themes) {
+			processAppend(this.options.themes[themeName], themeName);
+		}
 
 		compiler.hooks.environment.tap(THEME_NAME, addLoaders);
 
 		compiler.hooks.compilation.tap(THEME_NAME, function(compilation) {
 			compilation.hooks.htmlWebpackPluginAfterHtmlProcessing.tapAsync(THEME_NAME, function(data, callback) {
-				forOwn(themes, (files, themeName) => {
-					if (themeName !== primaryThemeName) {
+				themeNames.forEach((themeName, index) => {
+					if (index) {
 						data.html = stripLink(data.html, themeName);
 					}
-				});
+				})
 
 				callback(null, data);
 			});
