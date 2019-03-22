@@ -1,4 +1,4 @@
-const {basename, dirname, relative, resolve} = require('path');
+const {basename, dirname, isAbsolute, relative, resolve} = require('path');
 const fs = require('fs');
 const temp = require('temp');
 
@@ -30,7 +30,7 @@ module.exports = function(content) {
 
 	const normalize = (string) => {
 		string = string.replace(/\\/g, '\/');
-		if (string.charAt(0) !== '.') {
+		if (string.charAt(0) !== '.' && !isAbsolute(string)) {
 			string = './' + string;
 		}
 		return string;
