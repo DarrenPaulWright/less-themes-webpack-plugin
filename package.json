@@ -9,8 +9,36 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "patch": "npm version patch -m \"Increment patch version to %s\"",
     "minor": "npm version minor -m \"Increment minor version to %s\"",
-    "major": "npm version major -m \"Increment major version to %s\""
+    "major": "npm version major -m \"Increment major version to %s\"",
+    "docs": "jsdoc2md src/Plugin.js > README.md -t docs/docs.hbs --plugin dmd-readable -d 3"
   },
+  "badges": [
+    {
+      "name": "npm",
+      "image": "https://img.shields.io/npm/v/less-themes-webpack-plugin.svg",
+      "url": "https://npmjs.com/package/less-themes-webpack-plugin"
+    },
+    {
+      "name": "deps",
+      "image": "https://david-dm.org/darrenpaulwright/less-themes-webpack-plugin.svg",
+      "url": "https://david-dm.org/darrenpaulwright/less-themes-webpack-plugin"
+    },
+    {
+      "name": "size",
+      "image": "https://packagephobia.now.sh/badge?p=less-themes-webpack-plugin",
+      "url": "https://packagephobia.now.sh/result?p=less-themes-webpack-plugin"
+    },
+    {
+      "name": "vulnerabilities",
+      "image": "https://snyk.io/test/github/DarrenPaulWright/less-themes-webpack-plugin/badge.svg?targetFile=package.json",
+      "url": "https://snyk.io/test/github/DarrenPaulWright/less-themes-webpack-plugin?targetFile=package.json"
+    },
+    {
+      "name": "license",
+      "image": "https://img.shields.io/github/license/DarrenPaulWright/less-themes-webpack-plugin.svg",
+      "url": "https://npmjs.com/package/less-themes-webpack-plugin/LICENSE.md"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/DarrenPaulWright/less-themes-webpack-plugin.git"
@@ -32,5 +60,8 @@
     "postcss-loader": "^3.0.0",
     "temp": "^0.9.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "dmd-readable": "^0.2.0",
+    "jsdoc-to-markdown": "^4.0.1"
+  }
 }
