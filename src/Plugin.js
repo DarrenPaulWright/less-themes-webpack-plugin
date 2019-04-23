@@ -1,9 +1,8 @@
 const {resolve} = require('path');
-const fs = require('fs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const processOptionsThemes = require('./processOptionsThemes');
 
 const THEME_NAME = 'themes-plugin';
-const LESS_EXT = '.less';
 
 const defaultOptions = {
 	filename: '[name].min.css',
@@ -94,45 +93,9 @@ class ThemesPlugin {
 	}
 
 	apply(compiler) {
-		const themesPath = (this.options.themesPath.charAt(0) === '.') ? resolve(process.cwd(), this.options.themesPath) : this.options.themesPath;
-		const themes = {};
-		const themeNames = [];
-		let filePath;
-
-		const addImport = (filename, themeName) => {
-			if (!themes[themeName]) {
-				themes[themeName] = [];
-				themeNames.push(themeName);
-			}
-
-			if (filename.indexOf('.') === -1) {
-				filename += LESS_EXT;
-			}
-
-			filePath = resolve(themesPath, filename);
-
-			if (!fs.existsSync(filePath)) {
-				throw new Error('Theme file not found: ' + filePath);
-			}
-
-			themes[themeName].push(filePath);
-		};
-
-		const processAppend = (data, themeName) => {
-			if (typeof data === 'string') {
-				addImport(data, themeName);
-			}
-			else if (Array.isArray(data)) {
-				data.forEach((item) => {
-					processAppend(item, themeName);
-				});
-			}
-			else if (data && data.constructor === Object) {
-				for (let key in data) {
-					processAppend(data[key], themeName + '.' + key);
-				}
-			}
-		};
+		let themesPath = this.options.themesPath;
+		themesPath = (themesPath.charAt(0) === '.') ? resolve(process.cwd(), themesPath) : themesPath;
+		const [themes, themeNames] = processOptionsThemes(this.options.themes, themesPath);
 
 		const addLoaders = () => {
 			compiler.options.module.rules.push({
@@ -154,7 +117,8 @@ class ThemesPlugin {
 				test: /\.less$/,
 				use: [
 					MiniCssExtractPlugin.loader, {
-						loader: 'css-loader', options: {
+						loader: 'css-loader',
+						options: {
 							sourceMap: this.options.sourceMap || false
 						}
 					}, {
@@ -187,26 +151,24 @@ class ThemesPlugin {
 
 		const stripLink = (html, fileName) => {
 			fileName = this.options.filename.replace('[name]', fileName);
-			const search = new RegExp('<link[^>]+' + fileName + '[^>]+>');
+			const search = new RegExp(`<link[^>]+${fileName}[^>]+>`);
 			return html.replace(search, '');
 		};
-
-		for (let themeName in this.options.themes) {
-			processAppend(this.options.themes[themeName], themeName);
-		}
 
 		compiler.hooks.environment.tap(THEME_NAME, addLoaders);
 
 		compiler.hooks.compilation.tap(THEME_NAME, function(compilation) {
-			compilation.hooks.htmlWebpackPluginAfterHtmlProcessing.tapAsync(THEME_NAME, function(data, callback) {
-				themeNames.forEach((themeName, index) => {
-					if (index) {
-						data.html = stripLink(data.html, themeName);
-					}
-				})
+			if (compilation.hooks.htmlWebpackPluginAfterHtmlProcessing) {
+				compilation.hooks.htmlWebpackPluginAfterHtmlProcessing.tapAsync(THEME_NAME, function(data, callback) {
+					themeNames.forEach((themeName, index) => {
+						if (index) {
+							data.html = stripLink(data.html, themeName);
+						}
+					});
 
-				callback(null, data);
-			});
+					callback(null, data);
+				});
+			}
 		});
 	}
 }

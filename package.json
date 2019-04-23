@@ -6,7 +6,8 @@
   "license": "MIT",
   "main": "src/Plugin.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
+    "test-watch": "mocha --watch",
     "patch": "npm version patch -m \"Increment patch version to %s\"",
     "minor": "npm version minor -m \"Increment minor version to %s\"",
     "major": "npm version major -m \"Increment major version to %s\"",
@@ -56,13 +57,15 @@
   "dependencies": {
     "css-loader": "^2.1.1",
     "less-loader": "^4.1.0",
-    "mini-css-extract-plugin": "^0.6.0",
     "mkdirp": "^0.5.1",
+    "mini-css-extract-plugin": "^0.6.0",
     "postcss-loader": "^3.0.0",
     "temp": "^0.9.0"
   },
   "devDependencies": {
-    "dmd-readable": "^0.2.0",
-    "jsdoc-to-markdown": "^4.0.1"
+    "chai": "^4.2.0",
+    "dmd-readable": "^0.2.1",
+    "jsdoc-to-markdown": "^4.0.1",
+    "mocha": "^6.1.4"
   }
 }
