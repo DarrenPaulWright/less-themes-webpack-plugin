@@ -1,6 +1,7 @@
 const {basename, dirname, isAbsolute, relative, resolve} = require('path');
 const fs = require('fs');
 const temp = require('temp');
+const mkdirp = require('mkdirp');
 
 temp.track();
 
@@ -64,20 +65,11 @@ module.exports = function(content) {
 		return content.substring(0, index) + add + content.substring(index, content.length);
 	};
 
-	const ensureDirectoryExists = (filePath) => {
-		const dir = dirname(filePath);
-
-		if (!fs.existsSync(dir)) {
-			ensureDirectoryExists(dir);
-			fs.mkdirSync(dir);
-		}
-	};
-
 	const addAsset = (themeFiles, themeName, importFilePath) => {
 		const themeFileName = baseFileName + DOT + themeName + LESS_EXT;
 		const filePath = resolve(contextPath, themeFileName);
 
-		ensureDirectoryExists(filePath);
+		mkdirp.sync(dirname(filePath));
 		fs.writeFileSync(filePath, buildLessImports(themeFiles, filePath, importFilePath));
 
 		content = addLineAt(content, lessImport.index, buildJsImport(relative(dirPath, filePath)));
