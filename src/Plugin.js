@@ -30,7 +30,9 @@ const defaultOptions = {
  */
 
 /**
- * This plugin automatically adds its own loader and [mini-css-extract-plugin](https://github.com/webpack-contrib/mini-css-extract-plugin), [less-loader](https://github.com/webpack-contrib/less-loader), [css-loader](https://github.com/webpack-contrib/css-loader), and [postcss-loader](https://github.com/postcss/postcss-loader).
+ * This plugin automatically adds its own loader and [mini-css-extract-plugin](https://github.com/webpack-contrib/mini-css-extract-plugin), [less-loader](https://github.com/webpack-contrib/less-loader), [css-loader](https://github.com/webpack-contrib/css-loader), and [postcss-loader](https://github.com/postcss/postcss-loader). You shouldn't need to install them or reference them in any way in your webpack config.
+ *
+ * If you are using [html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin), then this plugin will add a reference to the first compiled css theme file in the generated html (in the following example that would be main.light.mobile.min.css).
  *
  * In your js files import less like this:
  * ```javascript
@@ -53,23 +55,50 @@ const defaultOptions = {
  *				main: {
  *					light: {
  *						mobile: [
- *							'light.less'
+ *							'main/light.less'
  *						],
  *						desktop: [
- *							'light.less',
- *							'desktop.less'
+ *							'main/light.less',
+ *							'main/desktop.less'
  *						]
  *					},
  *					dark: {
  *						mobile: [
- *							'light.less',
- *							'dark.less'
+ *							'main/light.less',
+ *							'main/dark.less'
  *						],
  *						desktop: [
- *							'light.less',
- *							'dark.less',
- *							'desktop.less'
+ *							'main/light.less',
+ *							'main/dark.less',
+ *							'main/desktop.less'
  *						]
+ *					}
+ *				}
+ *			}
+ *		})
+ *    ]
+ * };
+ *
+ * // The following will produce the same output:
+ * module.exports = {
+ *    // ...
+ *    plugins: [
+ *		new ThemesPlugin({
+ *			filename: '[name].min.css',
+ *			themesPath: './themes',
+ *			sourceMap: true,
+ *			themes: {
+ *				main: {
+ *					path: 'main',
+ *					include: 'light',
+ *					light: {
+ *						mobile: [],
+ *						desktop: 'desktop'
+ *					},
+ *					dark: {
+ *						include: 'dark',
+ *						mobile: [],
+ *						desktop: 'desktop'
  *					}
  *				}
  *			}
@@ -79,10 +108,18 @@ const defaultOptions = {
  * ```
  *
  * @arg {object} options
- * @arg {string} [options.filename='[name].min.css'] - The output file name. Replaces [name] with a generated name based on the themes option. In this example you would get four .css files: <br>&nbsp; • main.light.mobile.min.css <br>&nbsp;• main.light.desktop.min.css <br>&nbsp;• main.dark.mobile.min.css <br>&nbsp;• main.dark.desktop.min.css
- * @arg {string} [options.themesPath=''] - The path to the theme files in `options.themes`.
+ *
+ * @arg {string} [options.filename=[name].min.css] - The output file name. Replaces [name] with a generated name based on the themes option. In the following example you would get four .css files: <br>• main.light.mobile.min.css <br>• main.light.desktop.min.css <br>• main.dark.mobile.min.css <br>• main.dark.desktop.min.css
+ *
+ * @arg {string} [options.themesPath=''] - The base path to the theme files in `options.themes`.
+ *
  * @arg {boolean} [options.sourceMap=false] - This is passed directly into MiniCssExtractPlugin.
- * @arg {object} options.themes - Defines which files to import for each different theme. Can handle any amount of nesting. The file extension is not necessary in the file name if the actual file has an extension of `.less`.
+ *
+ * @arg {object} options.themes - Defines which files to import for each different theme. Can handle any amount of nesting. The file extension is not necessary in the file name if the actual file has an extension of `.less`. File definitions can be a string or an array of strings.
+ *
+ * @arg {string} [options.themes.path] - Appends a directory to the current path. Can be specified at any level.
+ *
+ * @arg {string|array} [options.themes.include] - Appends another directory to the current path. Can be specified at any level.
  *
  * @name Usage
  */
