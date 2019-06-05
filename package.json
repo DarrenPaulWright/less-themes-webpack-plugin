@@ -1,71 +1,71 @@
 {
-  "name": "less-themes-webpack-plugin",
-  "version": "1.3.0",
-  "description": "A webpack plugin for generating multiple themed css files from less.",
-  "author": "Darren Paul Wright <Darren@DarrenPaulWright.com>",
-  "license": "MIT",
-  "main": "src/Plugin.js",
-  "scripts": {
-    "test": "mocha",
-    "test-watch": "mocha --watch",
-    "patch": "npm version patch -m \"Increment patch version to %s\"",
-    "minor": "npm version minor -m \"Increment minor version to %s\"",
-    "major": "npm version major -m \"Increment major version to %s\"",
-    "docs": "jsdoc2md src/Plugin.js > README.md -t docs/docs.hbs --plugin dmd-readable -d 3"
-  },
-  "badges": [
-    {
-      "name": "npm",
-      "image": "https://img.shields.io/npm/v/less-themes-webpack-plugin.svg",
-      "url": "https://npmjs.com/package/less-themes-webpack-plugin"
-    },
-    {
-      "name": "deps",
-      "image": "https://david-dm.org/darrenpaulwright/less-themes-webpack-plugin.svg",
-      "url": "https://david-dm.org/darrenpaulwright/less-themes-webpack-plugin"
-    },
-    {
-      "name": "size",
-      "image": "https://packagephobia.now.sh/badge?p=less-themes-webpack-plugin",
-      "url": "https://packagephobia.now.sh/result?p=less-themes-webpack-plugin"
-    },
-    {
-      "name": "vulnerabilities",
-      "image": "https://snyk.io/test/github/DarrenPaulWright/less-themes-webpack-plugin/badge.svg?targetFile=package.json",
-      "url": "https://snyk.io/test/github/DarrenPaulWright/less-themes-webpack-plugin?targetFile=package.json"
-    },
-    {
-      "name": "license",
-      "image": "https://img.shields.io/github/license/DarrenPaulWright/less-themes-webpack-plugin.svg",
-      "url": "https://npmjs.com/package/less-themes-webpack-plugin/LICENSE.md"
-    }
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/DarrenPaulWright/less-themes-webpack-plugin.git"
-  },
-  "bugs": {
-    "url": "https://github.com/DarrenPaulWright/less-themes-webpack-plugin/issues"
-  },
-  "homepage": "https://github.com/DarrenPaulWright/less-themes-webpack-plugin#readme",
-  "keywords": [
-    "webpack",
-    "less",
-    "css",
-    "themes"
-  ],
-  "dependencies": {
-    "css-loader": "^2.1.1",
-    "less-loader": "^5.0.0",
-    "mini-css-extract-plugin": "^0.6.0",
-    "mkdirp": "^0.5.1",
-    "postcss-loader": "^3.0.0",
-    "temp": "^0.9.0"
-  },
-  "devDependencies": {
-    "chai": "^4.2.0",
-    "dmd-readable": "^0.2.1",
-    "jsdoc-to-markdown": "^4.0.1",
-    "mocha": "^6.1.4"
-  }
+	"name": "less-themes-webpack-plugin",
+	"version": "1.3.0",
+	"description": "A webpack plugin for generating multiple themed css files from less.",
+	"author": "Darren Paul Wright <Darren@DarrenPaulWright.com>",
+	"license": "MIT",
+	"main": "src/Plugin.js",
+	"scripts": {
+		"test": "mocha",
+		"test-watch": "mocha --watch",
+		"patch": "npm version patch -m \"Increment patch version to %s\" && npm publish",
+		"minor": "npm version minor -m \"Increment minor version to %s\" && npm publish",
+		"major": "npm version major -m \"Increment major version to %s\" && npm publish",
+		"docs": "jsdoc2md src/Plugin.js > README.md -t docs/docs.hbs --plugin dmd-readable -d 3"
+	},
+	"badges": [
+		{
+			"name": "npm",
+			"image": "https://img.shields.io/npm/v/less-themes-webpack-plugin.svg",
+			"url": "https://npmjs.com/package/less-themes-webpack-plugin"
+		},
+		{
+			"name": "deps",
+			"image": "https://david-dm.org/darrenpaulwright/less-themes-webpack-plugin.svg",
+			"url": "https://david-dm.org/darrenpaulwright/less-themes-webpack-plugin"
+		},
+		{
+			"name": "size",
+			"image": "https://packagephobia.now.sh/badge?p=less-themes-webpack-plugin",
+			"url": "https://packagephobia.now.sh/result?p=less-themes-webpack-plugin"
+		},
+		{
+			"name": "vulnerabilities",
+			"image": "https://snyk.io/test/github/DarrenPaulWright/less-themes-webpack-plugin/badge.svg?targetFile=package.json",
+			"url": "https://snyk.io/test/github/DarrenPaulWright/less-themes-webpack-plugin?targetFile=package.json"
+		},
+		{
+			"name": "license",
+			"image": "https://img.shields.io/github/license/DarrenPaulWright/less-themes-webpack-plugin.svg",
+			"url": "https://npmjs.com/package/less-themes-webpack-plugin/LICENSE.md"
+		}
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/DarrenPaulWright/less-themes-webpack-plugin.git"
+	},
+	"bugs": {
+		"url": "https://github.com/DarrenPaulWright/less-themes-webpack-plugin/issues"
+	},
+	"homepage": "https://github.com/DarrenPaulWright/less-themes-webpack-plugin#readme",
+	"keywords": [
+		"webpack",
+		"less",
+		"css",
+		"themes"
+	],
+	"dependencies": {
+		"css-loader": "^2.1.1",
+		"less-loader": "^5.0.0",
+		"mini-css-extract-plugin": "^0.7.0",
+		"mkdirp": "^0.5.1",
+		"postcss-loader": "^3.0.0",
+		"temp": "^0.9.0"
+	},
+	"devDependencies": {
+		"chai": "^4.2.0",
+		"dmd-readable": "^0.2.1",
+		"jsdoc-to-markdown": "^5.0.0",
+		"mocha": "^6.1.4"
+	}
 }
