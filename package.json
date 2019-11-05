@@ -8,9 +8,7 @@
 	"scripts": {
 		"test": "mocha",
 		"test-watch": "mocha --watch",
-		"patch": "npm version patch -m \"Increment patch version to %s\" && npm publish",
-		"minor": "npm version minor -m \"Increment minor version to %s\" && npm publish",
-		"major": "npm version major -m \"Increment major version to %s\" && npm publish",
+		"version": "npm run docs && git add docs",
 		"docs": "jsdoc2md src/Plugin.js > README.md -t docs/docs.hbs --plugin dmd-readable -d 3"
 	},
 	"badges": [
@@ -55,17 +53,17 @@
 		"themes"
 	],
 	"dependencies": {
-		"css-loader": "^3.1.0",
+		"css-loader": "^3.2.0",
 		"less-loader": "^5.0.0",
 		"mini-css-extract-plugin": "^0.8.0",
 		"mkdirp": "^0.5.1",
 		"postcss-loader": "^3.0.0",
-		"temp": "^0.9.0"
+		"temp": "^0.9.1"
 	},
 	"devDependencies": {
 		"chai": "^4.2.0",
-		"dmd-readable": "^0.4.0",
-		"jsdoc-to-markdown": "^5.0.0",
-		"mocha": "^6.2.0"
+		"dmd-readable": "^1.0.0",
+		"jsdoc-to-markdown": "^5.0.2",
+		"mocha": "^6.2.2"
 	}
 }
