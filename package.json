@@ -5,6 +5,9 @@
 	"author": "Darren Paul Wright <Darren@DarrenPaulWright.com>",
 	"license": "MIT",
 	"main": "src/Plugin.js",
+	"files": [
+		"src"
+	],
 	"scripts": {
 		"test": "mocha",
 		"test-watch": "mocha --watch",
