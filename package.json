@@ -11,36 +11,40 @@
 	"scripts": {
 		"test": "mocha",
 		"test-watch": "mocha --watch",
-		"version": "npm run docs && git add docs",
-		"docs": "jsdoc2md src/Plugin.js > README.md -t docs/docs.hbs --plugin dmd-readable -d 3"
+		"patch": "npm version patch && npm publish",
+		"minor": "npm version minor && npm publish",
+		"major": "npm version major && npm publish",
+		"preversion": "npm test && npm run docs && git add --all && git diff --staged --quiet || git commit -m \"Updating docs\"",
+		"postpublish": "git push --follow-tags",
+		"deps": "ncu -u && npm install",
+		"deps-commit": "npm run deps && git add --all && git diff --staged --quiet || git commit -m \"Updating dependencies\"",
+		"deps-patch": "npm run deps-commit && npm run patch",
+		"docs": "jsdoc2md src/Plugin.js > README.md -t node_modules/dmd-readable/docs.hbs --plugin dmd-readable"
 	},
-	"badges": [
-		{
-			"name": "npm",
-			"image": "https://img.shields.io/npm/v/less-themes-webpack-plugin.svg",
-			"url": "https://npmjs.com/package/less-themes-webpack-plugin"
+	"badges": {
+		"npm": {
+			"image": "https://img.shields.io/npm/v/{{name}}.svg",
+			"url": "https://npmjs.com/package/{{name}}"
 		},
-		{
-			"name": "deps",
-			"image": "https://david-dm.org/darrenpaulwright/less-themes-webpack-plugin.svg",
-			"url": "https://david-dm.org/darrenpaulwright/less-themes-webpack-plugin"
+		"deps": {
+			"image": "https://david-dm.org/darrenpaulwright/{{name}}.svg",
+			"url": "https://david-dm.org/darrenpaulwright/{{name}}"
 		},
-		{
-			"name": "size",
-			"image": "https://packagephobia.now.sh/badge?p=less-themes-webpack-plugin",
-			"url": "https://packagephobia.now.sh/result?p=less-themes-webpack-plugin"
+		"size": {
+			"base": "https://packagephobia.now.sh/",
+			"image": "badge?p={{name}}",
+			"url": "result?p={{name}}"
 		},
-		{
-			"name": "vulnerabilities",
-			"image": "https://snyk.io/test/github/DarrenPaulWright/less-themes-webpack-plugin/badge.svg?targetFile=package.json",
-			"url": "https://snyk.io/test/github/DarrenPaulWright/less-themes-webpack-plugin?targetFile=package.json"
+		"vulnerabilities": {
+			"base": "https://snyk.io/test/github/DarrenPaulWright/{{name}}",
+			"image": "/badge.svg?targetFile=package.json",
+			"url": "?targetFile=package.json"
 		},
-		{
-			"name": "license",
-			"image": "https://img.shields.io/github/license/DarrenPaulWright/less-themes-webpack-plugin.svg",
-			"url": "https://npmjs.com/package/less-themes-webpack-plugin/LICENSE.md"
+		"license": {
+			"image": "https://img.shields.io/github/license/DarrenPaulWright/{{name}}.svg",
+			"url": "https://npmjs.com/package/{{name}}/LICENSE.md"
 		}
-	],
+	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/DarrenPaulWright/less-themes-webpack-plugin.git"
@@ -56,16 +60,16 @@
 		"themes"
 	],
 	"dependencies": {
-		"css-loader": "^3.2.1",
+		"css-loader": "^3.4.0",
 		"less-loader": "^5.0.0",
-		"mini-css-extract-plugin": "^0.8.0",
+		"mini-css-extract-plugin": "^0.9.0",
 		"mkdirp": "^0.5.1",
 		"postcss-loader": "^3.0.0",
 		"temp": "^0.9.1"
 	},
 	"devDependencies": {
 		"chai": "^4.2.0",
-		"dmd-readable": "^1.0.1",
+		"dmd-readable": "^1.1.0",
 		"jsdoc-to-markdown": "^5.0.3",
 		"mocha": "^6.2.2"
 	}

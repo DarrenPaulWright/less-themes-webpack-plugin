@@ -11,17 +11,17 @@
 
 <br><a name="Installation"></a>
 
-### Installation
+## Installation
 ```npm install less-themes-webpack-plugin --save-dev```
 
 <br><a name="Compatibility"></a>
 
-### Compatibility
+## Compatibility
 Requires:- webpack 4+- node 8.5.0+Since this library uses [postcss-loader](https://github.com/postcss/postcss-loader) you must have a postcss.config.js in the root of your project for this plugin to work.You also need to install [Less](https://github.com/less/less.js).This way you can control exactly which version you need.This plugin automatically adds its own loader and:- [mini-css-extract-plugin](https://github.com/webpack-contrib/mini-css-extract-plugin)- [less-loader](https://github.com/webpack-contrib/less-loader)- [css-loader](https://github.com/webpack-contrib/css-loader)- [postcss-loader](https://github.com/postcss/postcss-loader)You shouldn't need to install them or reference them in any way in your webpack config.If you are using [html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin), then this plugin will add a reference to the first compiled css theme file in the generated html (in the following example that would be main.light.mobile.min.css).
 
 <br><a name="Usage"></a>
 
-### Usage
+## Usage
 In your js files import less like this:```javascriptimport './stylesForThisFile.less';```
 
 | Param | Type | Default | Description |
