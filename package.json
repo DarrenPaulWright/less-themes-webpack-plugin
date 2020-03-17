@@ -1,6 +1,6 @@
 {
 	"name": "less-themes-webpack-plugin",
-	"version": "1.3.7",
+	"version": "1.3.8",
 	"description": "A webpack plugin for generating multiple themed css files from less.",
 	"author": {
 		"name": "Darren Paul Wright",
