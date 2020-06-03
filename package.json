@@ -65,17 +65,18 @@
 		"themes"
 	],
 	"dependencies": {
-		"css-loader": "^3.4.2",
-		"less-loader": "^5.0.0",
+		"css-loader": "^3.5.3",
+		"escape-string-regexp": "^4.0.0",
+		"less-loader": "^6.1.0",
 		"mini-css-extract-plugin": "^0.9.0",
-		"mkdirp": "^1.0.3",
+		"mkdirp": "^1.0.4",
 		"postcss-loader": "^3.0.0",
 		"temp": "^0.9.1"
 	},
 	"devDependencies": {
 		"chai": "^4.2.0",
 		"dmd-readable": "^1.2.1",
-		"jsdoc-to-markdown": "^5.0.3",
-		"mocha": "^7.1.0"
+		"jsdoc-to-markdown": "^6.0.1",
+		"mocha": "^7.2.0"
 	}
 }

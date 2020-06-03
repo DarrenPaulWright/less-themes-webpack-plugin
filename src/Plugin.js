@@ -1,4 +1,5 @@
-const {resolve} = require('path');
+const { resolve } = require('path');
+const escapeStringRegexp = require('escape-string-regexp');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const processOptionsThemes = require('./processOptionsThemes');
 
@@ -185,7 +186,7 @@ class ThemesPlugin {
 
 			themeNames.forEach((themeName) => {
 				compiler.options.optimization.splitChunks.cacheGroups[themeName] = {
-					test: new RegExp('\.' + themeName + '\.less$'),
+					test: new RegExp('\.' + escapeStringRegexp(themeName) + '\.less$'),
 					name: themeName,
 					chunks: 'all',
 					enforce: true
@@ -195,7 +196,7 @@ class ThemesPlugin {
 
 		const stripLink = (html, fileName) => {
 			fileName = this.options.filename.replace('[name]', fileName);
-			const search = new RegExp(`<link[^>]+${fileName}[^>]+>`);
+			const search = new RegExp(`<link[^>]+${escapeStringRegexp(fileName)}[^>]+>`);
 			return html.replace(search, '');
 		};
 
