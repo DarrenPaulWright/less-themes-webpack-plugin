@@ -177,8 +177,6 @@ class ThemesPlugin {
 				}, {
 					loader: 'less-loader',
 					options: {
-						javascriptEnabled: true,
-						compress: false,
 						sourceMap: this.options.sourceMap || false
 					}
 				}]
