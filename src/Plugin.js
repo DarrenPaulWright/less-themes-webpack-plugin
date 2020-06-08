@@ -2,6 +2,7 @@ const { resolve } = require('path');
 const escapeStringRegexp = require('escape-string-regexp');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const processOptionsThemes = require('./processOptionsThemes');
+const HtmlWebpackPlugin = require('safe-require')('html-webpack-plugin');
 
 const THEME_NAME = 'themes-plugin';
 
@@ -136,13 +137,16 @@ const defaultOptions = {
 
 class ThemesPlugin {
 	constructor(options) {
-		this.options = Object.assign({}, defaultOptions, options);
+		this.options = { ...defaultOptions, ...options };
 	}
 
 	apply(compiler) {
 		let themesPath = this.options.themesPath;
 		themesPath = (themesPath.charAt(0) === '.') ? resolve(process.cwd(), themesPath) : themesPath;
 		const [themes, themeNames] = processOptionsThemes(this.options.themes, themesPath);
+		let hasHtmlWebpackPlugin = compiler.options.plugins.some((plugin) => {
+			return plugin instanceof HtmlWebpackPlugin;
+		});
 
 		const addLoaders = () => {
 			compiler.options.module.rules.push({
@@ -200,19 +204,39 @@ class ThemesPlugin {
 
 		compiler.hooks.environment.tap(THEME_NAME, addLoaders);
 
-		compiler.hooks.compilation.tap(THEME_NAME, function(compilation) {
-			if (compilation.hooks.htmlWebpackPluginAfterHtmlProcessing) {
-				compilation.hooks.htmlWebpackPluginAfterHtmlProcessing.tapAsync(THEME_NAME, function(data, callback) {
-					themeNames.forEach((themeName, index) => {
-						if (index) {
-							data.html = stripLink(data.html, themeName);
-						}
-					});
+		if (hasHtmlWebpackPlugin) {
+			compiler.hooks.compilation.tap(THEME_NAME, (compilation) => {
+				if (compilation.hooks.htmlWebpackPluginAfterHtmlProcessing) {
+					compilation
+						.hooks
+						.htmlWebpackPluginAfterHtmlProcessing
+						.tapAsync(THEME_NAME, (data, callback) => {
+							themeNames.forEach((themeName, index) => {
+								if (index) {
+									data.html = stripLink(data.html, themeName);
+								}
+							});
 
-					callback(null, data);
-				});
-			}
-		});
+							callback(null, data);
+						});
+				}
+				else {
+					HtmlWebpackPlugin
+						.getHooks(compilation)
+						.alterAssetTags
+						.tapAsync(THEME_NAME, (data, callback) => {
+							data.assetTags.styles.some((tag) => {
+								if (tag.attributes.href.includes(themeNames[0])) {
+									data.assetTags.styles = [tag];
+									return true;
+								}
+							});
+
+							callback(null, data);
+						});
+				}
+			});
+		}
 	}
 }
 

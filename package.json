@@ -71,12 +71,15 @@
 		"mini-css-extract-plugin": "^0.9.0",
 		"mkdirp": "^1.0.4",
 		"postcss-loader": "^3.0.0",
+		"safe-require": "^1.0.3",
 		"temp": "^0.9.1"
 	},
 	"devDependencies": {
 		"chai": "^4.2.0",
 		"dmd-readable": "^1.2.1",
+		"html-webpack-plugin": "^4.3.0",
 		"jsdoc-to-markdown": "^6.0.1",
-		"mocha": "^7.2.0"
+		"mocha": "^7.2.0",
+		"webpack": "^4.43.0"
 	}
 }
