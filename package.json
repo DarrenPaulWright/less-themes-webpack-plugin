@@ -76,7 +76,7 @@
 	},
 	"devDependencies": {
 		"chai": "^4.2.0",
-		"dmd-readable": "^1.2.1",
+		"dmd-readable": "^1.2.2",
 		"html-webpack-plugin": "^4.3.0",
 		"jsdoc-to-markdown": "^6.0.1",
 		"mocha": "^7.2.0",
