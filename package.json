@@ -2,68 +2,68 @@
 	"name": "less-themes-webpack-plugin",
 	"version": "1.4.1",
 	"description": "A webpack plugin for generating multiple themed css files from less.",
-	"author": {
-		"name": "Darren Paul Wright",
-		"email": "Darren@DarrenPaulWright.com",
-		"url": "https://www.darrenpaulwright.com"
-	},
-	"license": "MIT",
-	"main": "src/Plugin.js",
-	"files": [
-		"src"
-	],
-	"scripts": {
-		"test": "mocha",
-		"test-watch": "mocha --watch",
-		"preversion": "npm test && npm run docs && git add --all && git diff --staged --quiet || git commit -m \"Updating docs\"",
-		"postversion": "npm publish",
-		"postpublish": "git push --follow-tags",
-		"pre-clean": "rm -rf node_modules && del /f package-lock.json",
-		"clean": "npm run pre-clean && npm install",
-		"update": "ncu -u && npm install",
-		"update-clean": "npm run pre-clean && npm run update",
-		"update-commit": "npm run update && npm test && git add --all && git diff --staged --quiet || git commit -m \"Updating dependencies\"",
-		"update-patch": "npm run update-commit && npm version patch",
-		"docs": "jsdoc2md src/Plugin.js > README.md -t node_modules/dmd-readable/docs.hbs --plugin dmd-readable"
-	},
-	"badges": {
-		"npm": {
-			"image": "https://img.shields.io/npm/v/{{name}}.svg",
-			"url": "https://npmjs.com/package/{{name}}"
-		},
-		"deps": {
-			"image": "https://david-dm.org/darrenpaulwright/{{name}}.svg",
-			"url": "https://david-dm.org/darrenpaulwright/{{name}}"
-		},
-		"size": {
-			"base": "https://packagephobia.now.sh/",
-			"image": "badge?p={{name}}",
-			"url": "result?p={{name}}"
-		},
-		"vulnerabilities": {
-			"base": "https://snyk.io/test/github/DarrenPaulWright/{{name}}",
-			"image": "/badge.svg?targetFile=package.json",
-			"url": "?targetFile=package.json"
-		},
-		"license": {
-			"image": "https://img.shields.io/github/license/DarrenPaulWright/{{name}}.svg",
-			"url": "https://npmjs.com/package/{{name}}/LICENSE.md"
-		}
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/DarrenPaulWright/less-themes-webpack-plugin.git"
-	},
-	"bugs": {
-		"url": "https://github.com/DarrenPaulWright/less-themes-webpack-plugin/issues"
-	},
-	"homepage": "https://github.com/DarrenPaulWright/less-themes-webpack-plugin#readme",
 	"keywords": [
 		"webpack",
 		"less",
 		"css",
 		"themes"
 	],
+	"license": "MIT",
+	"author": {
+		"name": "Darren Paul Wright",
+		"email": "Darren@DarrenPaulWright.com",
+		"url": "https://www.darrenpaulwright.com"
+	},
+	"homepage": "https://github.com/DarrenPaulWright/less-themes-webpack-plugin#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/DarrenPaulWright/less-themes-webpack-plugin.git"
+	},
+	"bugs": {
+		"url": "https://github.com/DarrenPaulWright/less-themes-webpack-plugin/issues"
+	},
+	"main": "src/Plugin.js",
+	"files": [
+		"src"
+	],
+	"badges": {
+		"npm": {
+			"image": "https://img.shields.io/npm/v/less-themes-webpack-plugin.svg",
+			"url": "https://npmjs.com/package/less-themes-webpack-plugin"
+		},
+		"deps": {
+			"image": "https://david-dm.org/DarrenPaulWright/less-themes-webpack-plugin.svg",
+			"url": "https://david-dm.org/DarrenPaulWright/less-themes-webpack-plugin"
+		},
+		"size": {
+			"base": "https://packagephobia.now.sh/",
+			"image": "badge?p=less-themes-webpack-plugin",
+			"url": "result?p=less-themes-webpack-plugin"
+		},
+		"vulnerabilities": {
+			"base": "https://snyk.io/test/github/DarrenPaulWright/less-themes-webpack-plugin",
+			"image": "/badge.svg?targetFile=package.json",
+			"url": "?targetFile=package.json"
+		},
+		"license": {
+			"image": "https://img.shields.io/github/license/DarrenPaulWright/less-themes-webpack-plugin.svg",
+			"url": "https://npmjs.com/package/less-themes-webpack-plugin/LICENSE.md"
+		}
+	},
+	"scripts": {
+		"test": "mocha",
+		"test-watch": "mocha --watch",
+		"preversion": "npm test && npm run docs && git add --all && git diff HEAD --quiet || git commit -m \"Updating docs\"",
+		"postversion": "npm publish",
+		"postpublish": "git push --follow-tags",
+		"pre-clean": "rm -rf node_modules && del /f package-lock.json",
+		"clean": "npm run pre-clean && npm install && npm audit fix",
+		"update": "ncu -u && git diff --quiet || npm install && npm audit fix",
+		"update-clean": "npm run pre-clean && npm run update",
+		"update-commit": "npm run update && npm test && git add --all && git diff HEAD --quiet || git commit -m \"Updating dependencies\"",
+		"update-patch": "npm run update && npm test && git add --all && git diff HEAD --quiet || git commit -m \"Updating dependencies\" && npm version patch",
+		"docs": "jsdoc2md src/Plugin.js > README.md -t node_modules/dmd-readable/docs.hbs --plugin dmd-readable"
+	},
 	"dependencies": {
 		"css-loader": "^3.5.3",
 		"escape-string-regexp": "^4.0.0",
