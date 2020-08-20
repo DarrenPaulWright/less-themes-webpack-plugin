@@ -39,8 +39,8 @@ In your js files import less like this:```javascriptimport './stylesForThisFil
 
 [npm]: https://img.shields.io/npm/v/less-themes-webpack-plugin.svg
 [npm-url]: https://npmjs.com/package/less-themes-webpack-plugin
-[deps]: https://david-dm.org/darrenpaulwright/less-themes-webpack-plugin.svg
-[deps-url]: https://david-dm.org/darrenpaulwright/less-themes-webpack-plugin
+[deps]: https://david-dm.org/DarrenPaulWright/less-themes-webpack-plugin.svg
+[deps-url]: https://david-dm.org/DarrenPaulWright/less-themes-webpack-plugin
 [size]: https://packagephobia.now.sh/badge?p&#x3D;less-themes-webpack-plugin
 [size-url]: https://packagephobia.now.sh/result?p&#x3D;less-themes-webpack-plugin
 [vulnerabilities]: https://snyk.io/test/github/DarrenPaulWright/less-themes-webpack-plugin/badge.svg?targetFile&#x3D;package.json
