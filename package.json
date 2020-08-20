@@ -65,13 +65,13 @@
 		"docs": "jsdoc2md src/Plugin.js > README.md -t node_modules/dmd-readable/docs.hbs --plugin dmd-readable"
 	},
 	"dependencies": {
-		"css-loader": "^3.5.3",
+		"css-loader": "^4.2.1",
 		"escape-string-regexp": "^4.0.0",
-		"less-loader": "^6.1.0",
-		"mini-css-extract-plugin": "^0.9.0",
+		"less-loader": "^6.2.0",
+		"mini-css-extract-plugin": "^0.10.0",
 		"mkdirp": "^1.0.4",
 		"postcss-loader": "^3.0.0",
-		"safe-require": "^1.0.3",
+		"safe-require": "^1.0.4",
 		"temp": "^0.9.1"
 	},
 	"devDependencies": {
@@ -79,7 +79,7 @@
 		"dmd-readable": "^1.2.2",
 		"html-webpack-plugin": "^4.3.0",
 		"jsdoc-to-markdown": "^6.0.1",
-		"mocha": "^7.2.0",
-		"webpack": "^4.43.0"
+		"mocha": "^8.1.1",
+		"webpack": "^4.44.1"
 	}
 }
