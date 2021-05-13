@@ -1,101 +1,106 @@
 const { assert } = require('chai');
-const Plugin = require('../src/Plugin.js');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+const options = require('../webpack.config.js');
+const { readFileSync } = require('fs');
 
 describe('Plugin', () => {
-	it('should strip css file links from html (HtmlWebpackPlugin v3)', () => {
-		const plugin = new Plugin({
-			filename: 'styles/[name].min.css',
-			themesPath: './test/styles',
-			themes: {
-				main: {
-					path: 'main',
-					include: 'light',
-					light: {
-						mobile: [],
-						desktop: 'desktop'
-					},
-					dark: {
-						include: 'dark',
-						mobile: [],
-						desktop: 'desktop'
-					}
-				},
-				two: {
-					path: 'two',
-					include: 'red',
-					red: {
-						mobile: [],
-						desktop: 'desktop'
-					},
-					blue: {
-						include: 'blue',
-						mobile: [],
-						desktop: 'desktop'
-					}
-				}
-			}
-		});
+	it('should compile with webpack', function(done) {
+		this.timeout(20000);
 
-		let compilationCallback;
+		const expectedFiles = [{
+			path: 'src/main.js'
+		}, {
+			path: 'index.html',
+			content: '<!DOCTYPE html>\n' +
+				'<html>\n' +
+				'  <head>\n' +
+				'    <meta charset="utf-8">\n' +
+				'    <title>test</title>\n' +
+				'  <meta name="viewport" content="width=device-width,initial-scale=1"><script defer="defer" src="src/main.js"></script><link href="styles/main.dark.mobile.min.css" rel="stylesheet"></head>\n' +
+				'  <body>\n' +
+				'  </body>\n' +
+				'</html>'
+		}, {
+			path: 'styles/main.dark.desktop.min.css',
+			content: '.test {\n' +
+				'  color: black;\n' +
+				'  font-size: 1rem;\n' +
+				'}\n' +
+				'\n'
+		}, {
+			path: 'styles/main.dark.mobile.min.css',
+			content: '.test {\n' +
+				'  color: black;\n' +
+				'  font-size: 1.1rem;\n' +
+				'}\n' +
+				'\n'
+		}, {
+			path: 'styles/main.light.desktop.min.css',
+			content: '.test {\n' +
+				'  color: white;\n' +
+				'  font-size: 1rem;\n' +
+				'}\n' +
+				'\n'
+		}, {
+			path: 'styles/main.light.mobile.min.css',
+			content: '.test {\n' +
+				'  color: white;\n' +
+				'  font-size: 1.1rem;\n' +
+				'}\n' +
+				'\n'
+		}, {
+			path: 'styles/two.dark.desktop.min.css',
+			content: '.test {\n' +
+				'  color: red;\n' +
+				'  font-size: 2rem;\n' +
+				'}\n' +
+				'\n'
+		}, {
+			path: 'styles/two.dark.mobile.min.css',
+			content: '.test {\n' +
+				'  color: red;\n' +
+				'  font-size: 2.2rem;\n' +
+				'}\n' +
+				'\n'
+		}, {
+			path: 'styles/two.light.desktop.min.css',
+			content: '.test {\n' +
+				'  color: blue;\n' +
+				'  font-size: 2rem;\n' +
+				'}\n' +
+				'\n'
+		}, {
+			path: 'styles/two.light.mobile.min.css',
+			content: '.test {\n' +
+				'  color: blue;\n' +
+				'  font-size: 2.2rem;\n' +
+				'}\n' +
+				'\n'
+		}];
 
-		plugin.apply({
-			hooks: {
-				environment: {
-					tap() {
-					}
-				},
-				compilation: {
-					tap(name, callback) {
-						compilationCallback = callback;
-					}
-				}
-			},
-			options: {
-				plugins: [
-					new HtmlWebpackPlugin()
-				]
+		webpack(options, function(err, stats) {
+			if (err) {
+				return done(err);
 			}
-		});
+			else if (stats.hasErrors()) {
+				return done(new Error(stats.toString()));
+			}
 
-		compilationCallback({
-			hooks: {
-				htmlWebpackPluginAfterHtmlProcessing: {
-					tapAsync(name, callback) {
-						callback({
-							html: `
-<head>
-	<meta charset="utf-8"><title>Something</title>
-	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<link href="/styles/main.light.desktop.min.css" rel="stylesheet">
-	<link href="/styles/main.light.mobile.min.css" rel="stylesheet">
-	<link href="/styles/main.dark.desktop.min.css" rel="stylesheet">
-	<link href="/styles/main.dark.mobile.min.css" rel="stylesheet">
-	<link href="/styles/two.red.desktop.min.css" rel="stylesheet">
-	<link href="/styles/two.red.mobile.min.css" rel="stylesheet">
-	<link href="/styles/two.blue.desktop.min.css" rel="stylesheet">
-	<link href="/styles/two.blue.mobile.min.css" rel="stylesheet">
-</head>
-`
-						}, (first, data) => {
-							assert.strictEqual(data.html, `
-<head>
-	<meta charset="utf-8"><title>Something</title>
-	<meta name="viewport" content="width=device-width,initial-scale=1">
-	
-	<link href="/styles/main.light.mobile.min.css" rel="stylesheet">
-	
-	
-	
-	
-	
-	
-</head>
-`);
-						});
-					}
+			const files = stats.toJson().assets.map(x => x.name);
+
+			expectedFiles.forEach((expected) => {
+				assert.isTrue(files.includes(expected.path));
+
+				if (expected.content) {
+					const actualContent = readFileSync('dist/' + expected.path, 'utf8');
+
+					assert.strictEqual(actualContent, expected.content);
 				}
-			}
+			});
+
+			assert.strictEqual(files.length, expectedFiles.length);
+
+			done();
 		});
 	});
 });

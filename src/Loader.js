@@ -1,4 +1,4 @@
-const fs = require('fs');
+const { writeFileSync } = require('fs');
 const temp = require('temp');
 const JsFile = require('./JsFile');
 const mkdirp = require('mkdirp');
@@ -9,11 +9,11 @@ const files = {};
 const tempDir = temp.mkdirSync();
 
 const findEntryPoint = (module) => {
-	const reason = module.reasons[0];
-	if (reason && reason.module && reason.module.resource) {
-		return findEntryPoint(reason.module);
-	}
-	return module.resource;
+	const reason = module && module.reasons && module.reasons[0];
+
+	return (reason && reason.module && reason.module.resource) ?
+		findEntryPoint(reason.module) :
+		module.resource;
 };
 
 const isEntryPoint = (path, module) => {
@@ -32,13 +32,17 @@ module.exports = function(content) {
 
 		this.addDependency(jsFile.originalLessFilePath);
 
-		jsFile.context(tempDir, this.rootContext, isEntryPoint(this.resourcePath, this._module));
+		jsFile.context(
+			tempDir,
+			this.rootContext,
+			isEntryPoint(this.resourcePath, this._module)
+		);
 
 		for (let themeName in options.themes) {
 			const file = jsFile.addTheme(themeName, options.themes[themeName]);
 
 			mkdirp.sync(file.dir);
-			fs.writeFileSync(file.path, file.content);
+			writeFileSync(file.path, file.content);
 		}
 	}
 

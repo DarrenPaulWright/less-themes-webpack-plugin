@@ -1,5 +1,5 @@
 const fs = require('fs');
-const {resolve} = require('path');
+const { resolve } = require('path');
 
 const LESS_EXT = '.less';
 
@@ -10,12 +10,10 @@ const isFile = (value) => isString(value) || isArray(value);
 
 module.exports = function(optionsThemes, themesPath, skipFileCheck) {
 	const themes = {};
-	const themeNames = [];
 
 	const saveFile = (filename, currentPath, themeName) => {
 		if (!themes[themeName]) {
 			themes[themeName] = [];
-			themeNames.push(themeName);
 		}
 
 		if (filename.indexOf('.') === -1) {
@@ -33,9 +31,10 @@ module.exports = function(optionsThemes, themesPath, skipFileCheck) {
 
 	const processBranch = (data, currentPath, themeName, files) => {
 		if (isFile(data)) {
-			files.concat(data).forEach((item) => {
-				saveFile(item, currentPath, themeName);
-			});
+			files.concat(data)
+				.forEach((item) => {
+					saveFile(item, currentPath, themeName);
+				});
 		}
 		else if (isObject(data)) {
 			if (isString(data.path)) {
@@ -48,13 +47,19 @@ module.exports = function(optionsThemes, themesPath, skipFileCheck) {
 				delete data.include;
 			}
 
-			for (let key in data) {
-				processBranch(data[key], currentPath, themeName + (themeName ? '.' : '') + key, files);
-			}
+			Object.keys(data)
+				.forEach((key) => {
+					processBranch(
+						data[key],
+						currentPath,
+						themeName + (themeName ? '.' : '') + key,
+						files
+					);
+				});
 		}
 	};
 
 	processBranch(optionsThemes, themesPath, '', []);
 
-	return [themes, themeNames];
+	return [themes, Object.keys(themes)];
 };

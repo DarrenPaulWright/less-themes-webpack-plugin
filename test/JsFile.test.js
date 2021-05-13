@@ -1,4 +1,4 @@
-const {assert} = require('chai');
+const { assert } = require('chai');
 const JsFile = require('../src/JsFile');
 
 const context = 'A:\\base';
@@ -103,8 +103,10 @@ describe('JsFile', () => {
 			const jsFile = new JsFile(testPath, withLessFileContent);
 
 			jsFile.context(tempDir, context, false);
-			const firstFile = jsFile.addTheme('light', ['A:\\base\\themes\\main.less', 'A:\\base\\themes\\light.less']);
-			const secondFile = jsFile.addTheme('dark', ['A:\\base\\themes\\main.less', 'A:\\base\\themes\\dark.less']);
+			const firstFile = jsFile.addTheme('light', ['A:\\base\\themes\\main.less',
+				'A:\\base\\themes\\light.less']);
+			const secondFile = jsFile.addTheme('dark', ['A:\\base\\themes\\main.less',
+				'A:\\base\\themes\\dark.less']);
 
 			assert.deepEqual(firstFile.dir, outputFileDir);
 			assert.deepEqual(firstFile.path, outputFileDir + '\\Test.light.less');
@@ -121,8 +123,10 @@ describe('JsFile', () => {
 			const jsFile = new JsFile(testPath, withLessFileContent);
 
 			jsFile.context(tempDir, context, true);
-			const firstFile = jsFile.addTheme('light', ['A:\\base\\themes\\main.less', 'A:\\base\\themes\\light.less']);
-			const secondFile = jsFile.addTheme('dark', ['A:\\base\\themes\\main.less', 'A:\\base\\themes\\dark.less']);
+			const firstFile = jsFile.addTheme('light', ['A:\\base\\themes\\main.less',
+				'A:\\base\\themes\\light.less']);
+			const secondFile = jsFile.addTheme('dark', ['A:\\base\\themes\\main.less',
+				'A:\\base\\themes\\dark.less']);
 
 			assert.deepEqual(firstFile.dir, outputFileDir);
 			assert.deepEqual(firstFile.path, outputFileDir + '\\Test.light.less');
@@ -139,8 +143,10 @@ describe('JsFile', () => {
 			const jsFile = new JsFile(testPath, withLessFileContent);
 
 			jsFile.context(tempDirDiffDrive, context, false);
-			const firstFile = jsFile.addTheme('light', ['A:\\base\\themes\\main.less', 'A:\\base\\themes\\light.less']);
-			const secondFile = jsFile.addTheme('dark', ['A:\\base\\themes\\main.less', 'A:\\base\\themes\\dark.less']);
+			const firstFile = jsFile.addTheme('light', ['A:\\base\\themes\\main.less',
+				'A:\\base\\themes\\light.less']);
+			const secondFile = jsFile.addTheme('dark', ['A:\\base\\themes\\main.less',
+				'A:\\base\\themes\\dark.less']);
 
 			assert.deepEqual(firstFile.dir, outputFileDirDiffDrive);
 			assert.deepEqual(firstFile.path, outputFileDirDiffDrive + '\\Test.light.less');

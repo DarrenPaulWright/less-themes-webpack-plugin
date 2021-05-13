@@ -25,13 +25,14 @@ const defaultOptions = {
  * @name Compatibility
  * @summary
  * Requires:
- * - webpack 4+
- * - node 8.5.0+
+ * - webpack 5+
+ * - node 10+
  *
- * Since this library uses [postcss-loader](https://github.com/postcss/postcss-loader) you must have a postcss.config.js in the root of your project for this plugin to work.
+ * For webpack 4 use less-themes-webpack-plugin@1.5.1
  *
- * You also need to install [Less](https://github.com/less/less.js).
- * This way you can control exactly which version you need.
+ * Since this library uses [postcss-loader](https://github.com/postcss/postcss-loader) you must have a postcss config in the root of your project for this plugin to work.
+ *
+ * This library has a peer dependency of [Less](https://github.com/less/less.js).
  *
  * This plugin automatically adds its own loader and:
  * - [mini-css-extract-plugin](https://github.com/webpack-contrib/mini-css-extract-plugin)
@@ -142,85 +143,61 @@ class ThemesPlugin {
 
 	apply(compiler) {
 		let themesPath = this.options.themesPath;
-		themesPath = (themesPath.charAt(0) === '.') ? resolve(process.cwd(), themesPath) : themesPath;
+
+		if (themesPath.charAt(0) === '.') {
+			themesPath = resolve(process.cwd(), themesPath);
+		}
+
 		const [themes, themeNames] = processOptionsThemes(this.options.themes, themesPath);
-		let hasHtmlWebpackPlugin = compiler.options.plugins.some((plugin) => {
-			return plugin instanceof HtmlWebpackPlugin;
-		});
+		let hasHtmlWebpackPlugin = compiler.options.plugins
+			.some((plugin) => plugin instanceof HtmlWebpackPlugin);
 
-		const addLoaders = () => {
-			compiler.options.module.rules.push({
-				test: /\.js/,
-				loader: resolve(__dirname, 'Loader.js'),
-				enforce: 'pre',
-				options: {
-					themes: themes
-				}
-			});
+		compiler.hooks
+			.environment
+			.tap(THEME_NAME, () => {
+				const sourceMap = this.options.sourceMap || false;
+				const miniCssExtractPlugin = new MiniCssExtractPlugin({
+					filename: this.options.filename
+				});
+				compiler.options.plugins.push(miniCssExtractPlugin);
+				miniCssExtractPlugin.apply(compiler);
 
-			const miniCssExtractPlugin = new MiniCssExtractPlugin({
-				filename: this.options.filename
-			});
-			compiler.options.plugins.push(miniCssExtractPlugin);
-			miniCssExtractPlugin.apply(compiler);
-
-			compiler.options.module.rules.push({
-				test: /\.less$/,
-				use: [MiniCssExtractPlugin.loader, {
-					loader: 'css-loader',
-					options: {
-						sourceMap: this.options.sourceMap || false
-					}
+				compiler.options.module.rules = compiler.options.module.rules.concat([{
+					test: /\.js$/,
+					loader: resolve(__dirname, 'Loader.js'),
+					enforce: 'pre',
+					options: { themes }
 				}, {
-					loader: 'postcss-loader',
-					options: {
-						config: {
-							path: './'
+					test: /\.less$/,
+					use: [MiniCssExtractPlugin.loader, {
+						loader: 'css-loader',
+						options: { sourceMap }
+					}, {
+						loader: 'postcss-loader',
+						options: {
+							postcssOptions: { config: './' },
+							sourceMap
 						}
-					}
-				}, {
-					loader: 'less-loader',
-					options: {
-						sourceMap: this.options.sourceMap || false
-					}
-				}]
+					}, {
+						loader: 'less-loader',
+						options: { sourceMap }
+					}]
+				}]);
+
+				themeNames.forEach((themeName) => {
+					compiler.options.optimization.splitChunks.cacheGroups[themeName] = {
+						test: new RegExp('\.' + escapeStringRegexp(themeName) + '\.less$'),
+						name: themeName,
+						chunks: 'all',
+						enforce: true,
+						reuseExistingChunk: true
+					};
+				});
 			});
-
-			themeNames.forEach((themeName) => {
-				compiler.options.optimization.splitChunks.cacheGroups[themeName] = {
-					test: new RegExp('\.' + escapeStringRegexp(themeName) + '\.less$'),
-					name: themeName,
-					chunks: 'all',
-					enforce: true
-				};
-			});
-		};
-
-		const stripLink = (html, fileName) => {
-			fileName = this.options.filename.replace('[name]', fileName);
-			const search = new RegExp(`<link[^>]+${escapeStringRegexp(fileName)}[^>]+>`);
-			return html.replace(search, '');
-		};
-
-		compiler.hooks.environment.tap(THEME_NAME, addLoaders);
 
 		if (hasHtmlWebpackPlugin) {
-			compiler.hooks.compilation.tap(THEME_NAME, (compilation) => {
-				if (compilation.hooks.htmlWebpackPluginAfterHtmlProcessing) {
-					compilation
-						.hooks
-						.htmlWebpackPluginAfterHtmlProcessing
-						.tapAsync(THEME_NAME, (data, callback) => {
-							themeNames.forEach((themeName, index) => {
-								if (index) {
-									data.html = stripLink(data.html, themeName);
-								}
-							});
-
-							callback(null, data);
-						});
-				}
-				else {
+			compiler.hooks.compilation
+				.tap(THEME_NAME, (compilation) => {
 					HtmlWebpackPlugin
 						.getHooks(compilation)
 						.alterAssetTags
@@ -234,8 +211,10 @@ class ThemesPlugin {
 
 							callback(null, data);
 						});
-				}
-			});
+				});
+		}
+		else {
+			throw new Error('html-webpack-plugin not found. Required for less-themes-webpack-plugin.');
 		}
 	}
 }

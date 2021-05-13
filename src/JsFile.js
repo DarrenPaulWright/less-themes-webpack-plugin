@@ -1,4 +1,4 @@
-const {basename, dirname, isAbsolute, relative, resolve} = require('path');
+const { basename, dirname, isAbsolute, relative, resolve } = require('path');
 
 const NEW_LINE = '\n';
 const LESS_EXT = '.less';
@@ -9,58 +9,54 @@ const IMPORT_FILE = /'.\/([^']+)';/;
 
 const normalize = (string) => {
 	string = string.replace(/\\/g, '\/');
+
 	if (string.charAt(0) !== '.' && !isAbsolute(string)) {
 		string = './' + string;
 	}
+
 	return string;
 };
-
-const nextNewline = (content, index) => content.indexOf(NEW_LINE, index) + 1;
 
 const buildLessImport = (path, notReference = false) => {
 	const reference = notReference ? '' : ', reference';
 	return '@import (less' + reference + ') "' + normalize(path) + '";' + NEW_LINE;
 };
 
-const removeLine = Symbol();
-const addLine = Symbol();
-const addJsImport = Symbol();
-const buildTempFileContent = Symbol();
-
 module.exports = class JsFile {
 	constructor(path, content) {
-		this.baseFileName = basename(path, JS_EXT);
-		this.dirPath = dirname(path);
+		this._baseFileName = basename(path, JS_EXT);
+		this._dirPath = dirname(path);
 		this.content = content;
 
 		const lessImport = content.match(HAS_IMPORT);
 
 		if (lessImport) {
-			this.importFilePath = resolve(this.dirPath, lessImport[0].match(IMPORT_FILE)[1]);
-			this.importFileIndex = lessImport.index;
+			this._importFilePath = resolve(this._dirPath, lessImport[0].match(IMPORT_FILE)[1]);
+			this._importFileIndex = lessImport.index;
 
-			this.content = this[removeLine](this.content);
+			this.content = this._removeLine(this.content);
 		}
 	}
 
-	[removeLine](content) {
-		return content.substring(0, this.importFileIndex) + content.substring(nextNewline(content,
-			this.importFileIndex
-		), content.length);
+	_removeLine(content) {
+		const nextNewline = content.indexOf(NEW_LINE, this._importFileIndex) + 1;
+
+		return content.slice(0, this._importFileIndex) +
+			content.slice(nextNewline);
 	}
 
-	[addLine](line) {
-		this.content = this.content.substring(0,
-			this.importFileIndex
-		) + line + this.content.substring(this.importFileIndex, this.content.length);
+	_addLine(line) {
+		this.content = this.content.slice(0, this._importFileIndex) +
+			line +
+			this.content.slice(this._importFileIndex);
 	}
 
-	[addJsImport](path) {
-		this[addLine]('import "' + normalize(relative(this.dirPath, path)) + '";' + NEW_LINE);
+	_addJsImport(path) {
+		this._addLine('import "' + normalize(relative(this._dirPath, path)) + '";' + NEW_LINE);
 	}
 
-	[buildTempFileContent](files) {
-		let fileContent = buildLessImport(relative(this.tempFileDir, this.importFilePath), true);
+	_buildTempFileContent(files) {
+		let fileContent = buildLessImport(relative(this.tempFileDir, this._importFilePath), true);
 
 		fileContent += files.map((filePath) => {
 			return buildLessImport(relative(this.tempFileDir, filePath), this.isEntryPoint);
@@ -70,27 +66,27 @@ module.exports = class JsFile {
 	}
 
 	get hasLess() {
-		return this.importFileIndex !== undefined;
+		return this._importFileIndex !== undefined;
 	}
 
 	get originalLessFilePath() {
-		return this.importFilePath;
+		return this._importFilePath;
 	}
 
 	context(tempDir, context, isEntryPoint) {
-		this.tempFileDir = resolve(tempDir, relative(context, this.dirPath));
+		this.tempFileDir = resolve(tempDir, relative(context, this._dirPath));
 		this.isEntryPoint = isEntryPoint;
 	}
 
 	addTheme(name, files) {
-		const filePath = resolve(this.tempFileDir, this.baseFileName + DOT + name + LESS_EXT);
+		const filePath = resolve(this.tempFileDir, this._baseFileName + DOT + name + LESS_EXT);
 
-		this[addJsImport](filePath);
+		this._addJsImport(filePath);
 
 		return {
 			dir: this.tempFileDir,
 			path: filePath,
-			content: this[buildTempFileContent](files)
+			content: this._buildTempFileContent(files)
 		};
 	}
 };
