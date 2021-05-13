@@ -26,6 +26,17 @@ export default class Test {
 	}
 }
 `;
+const withMultipleLessFileContent = `
+import something from 'somewhere';
+import './Test.less';
+import './Another.less';
+
+export default class Test {
+	tester() {
+		return true;
+	}
+}
+`;
 const withThemesContent = `
 import something from 'somewhere';
 import "../../temp/src/Test.dark.less";
@@ -90,11 +101,20 @@ describe('JsFile', () => {
 		});
 	});
 
-	describe('.originalLessFilePath', () => {
+	describe('.originalLessFilePaths', () => {
 		it('should return the path of the original less file', () => {
 			const jsFile = new JsFile(testPath, withLessFileContent);
 
-			assert.deepEqual(jsFile.originalLessFilePath, 'A:\\base\\src\\Test.less');
+			assert.deepEqual(jsFile.originalLessFilePaths, ['A:\\base\\src\\Test.less']);
+		});
+
+		it('should return the path of multiple less files', () => {
+			const jsFile = new JsFile(testPath, withMultipleLessFileContent);
+
+			assert.deepEqual(jsFile.originalLessFilePaths, [
+				'A:\\base\\src\\Test.less',
+				'A:\\base\\src\\Another.less'
+			]);
 		});
 	});
 

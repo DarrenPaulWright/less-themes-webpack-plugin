@@ -30,7 +30,10 @@ module.exports = function(content) {
 	if (jsFile.hasLess) {
 		const options = this.query;
 
-		this.addDependency(jsFile.originalLessFilePath);
+		jsFile.originalLessFilePaths
+			.forEach((filePath) => {
+				this.addDependency(filePath);
+			});
 
 		jsFile.context(
 			tempDir,
