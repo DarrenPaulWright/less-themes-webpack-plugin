@@ -5,7 +5,10 @@ const ThemesPlugin = require('./src/Plugin.js');
 
 module.exports = {
 	mode: 'production',
-	entry: './test/app/app.js',
+	entry: [
+		'./test/app/app.js',
+		'./test/app/app2.js'
+	],
 	stats: 'errors-only',
 	output: {
 		path: path.resolve(__dirname, 'dist'),
@@ -27,19 +30,6 @@ module.exports = {
 					include: 'light',
 					dark: {
 						include: 'dark',
-						mobile: [],
-						desktop: 'desktop.less'
-					},
-					light: {
-						mobile: [],
-						desktop: 'desktop.less'
-					}
-				},
-				two: {
-					path: 'two',
-					include: 'blue',
-					dark: {
-						include: 'red',
 						mobile: [],
 						desktop: 'desktop.less'
 					},

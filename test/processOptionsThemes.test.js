@@ -1,4 +1,4 @@
-const {assert} = require('chai');
+const { assert } = require('chai');
 const processOptionsThemes = require('../src/processOptionsThemes');
 
 const basePath = 'A:\\base\\';
@@ -68,7 +68,9 @@ const structureWithPathAndNestedArrays = {
 
 const simpleStructureOut = {
 	'main.dark.desktop': [
-		basePath + 'main\\light.less', basePath + 'main\\dark.less', basePath + 'main\\desktop.less'
+		basePath + 'main\\light.less',
+		basePath + 'main\\dark.less',
+		basePath + 'main\\desktop.less'
 	],
 	'main.dark.mobile': [
 		basePath + 'main\\light.less', basePath + 'main\\dark.less'
@@ -82,7 +84,10 @@ const simpleStructureOut = {
 };
 
 const simpleFilesOut = [
-	'main.light.mobile', 'main.light.desktop', 'main.dark.mobile', 'main.dark.desktop'
+	'main.light.mobile',
+	'main.light.desktop',
+	'main.dark.mobile',
+	'main.dark.desktop'
 ];
 
 const multipleThemes = {
@@ -124,10 +129,12 @@ const multipleThemesOut = {
 		basePath + 'shared\\main\\desktop.less'
 	],
 	'shared.main.dark.mobile': [
-		basePath + 'shared\\main\\light.less', basePath + 'shared\\main\\dark.less'
+		basePath + 'shared\\main\\light.less',
+		basePath + 'shared\\main\\dark.less'
 	],
 	'shared.main.light.desktop': [
-		basePath + 'shared\\main\\light.less', basePath + 'shared\\main\\desktop.less'
+		basePath + 'shared\\main\\light.less',
+		basePath + 'shared\\main\\desktop.less'
 	],
 	'shared.main.light.mobile': [
 		basePath + 'shared\\main\\light.less'
@@ -138,10 +145,12 @@ const multipleThemesOut = {
 		basePath + 'shared\\differentPath\\desktop.less'
 	],
 	'shared.two.dark.mobile': [
-		basePath + 'shared\\differentPath\\light.less', basePath + 'shared\\differentPath\\dark.less'
+		basePath + 'shared\\differentPath\\light.less',
+		basePath + 'shared\\differentPath\\dark.less'
 	],
 	'shared.two.light.desktop': [
-		basePath + 'shared\\differentPath\\light.less', basePath + 'shared\\differentPath\\desktop.less'
+		basePath + 'shared\\differentPath\\light.less',
+		basePath + 'shared\\differentPath\\desktop.less'
 	],
 	'shared.two.light.mobile': [
 		basePath + 'shared\\differentPath\\light.less'
@@ -173,21 +182,25 @@ describe('processOptionsThemes', () => {
 	});
 
 	it('should return a processed object if a simple structure is provided', () => {
-		assert.deepEqual(processOptionsThemes(simpleStructure, basePath, true), [simpleStructureOut, simpleFilesOut]);
+		assert.deepEqual(processOptionsThemes(simpleStructure, basePath, true), [simpleStructureOut,
+			simpleFilesOut]);
 	});
 
 	it('should return a processed object if a structure with path is provided', () => {
-		assert.deepEqual(processOptionsThemes(structureWithPath, basePath, true), [simpleStructureOut, simpleFilesOut]);
+		assert.deepEqual(processOptionsThemes(structureWithPath, basePath, true), [simpleStructureOut,
+			simpleFilesOut]);
 	});
 
-	it('should return a processed object if a structure with path is provided', () => {
-		assert.deepEqual(processOptionsThemes(structureWithPathAndNestedArrays, basePath, true),
+	it('should return a processed object if a structure with path and nested arrays is provided', () => {
+		assert.deepEqual(
+			processOptionsThemes(structureWithPathAndNestedArrays, basePath, true),
 			[simpleStructureOut, simpleFilesOut]
 		);
 	});
 
 	it('should return a processed object for multiple themes', () => {
-		assert.deepEqual(processOptionsThemes(multipleThemes, basePath, true),
+		assert.deepEqual(
+			processOptionsThemes(multipleThemes, basePath, true),
 			[multipleThemesOut, multipleThemesFilesOut]
 		);
 	});
