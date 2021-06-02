@@ -15,23 +15,25 @@ module.exports = function(optionsThemes, themesPath, skipFileCheck) {
 			themes[themeName] = { files: [] };
 		}
 
-		const filePath = resolve(
-			currentPath,
-			addLessExtension(filename)
-		);
+		if (filename) {
+			const filePath = resolve(
+				currentPath,
+				addLessExtension(filename)
+			);
 
-		if (!skipFileCheck && !fs.existsSync(filePath)) {
-			throw new Error('Theme file not found: ' + filePath);
+			if (!skipFileCheck && !fs.existsSync(filePath)) {
+				throw new Error('Theme file not found: ' + filePath);
+			}
+
+			themes[themeName].files.push(filePath);
 		}
-
-		themes[themeName].files.push(filePath);
 	};
 
 	const processBranch = (data, currentPath, themeName, files) => {
 		if (isFile(data)) {
 			files.concat(data)
-				.forEach((item) => {
-					saveFile(item, currentPath, themeName);
+				.forEach((filename) => {
+					saveFile(filename, currentPath, themeName);
 				});
 		}
 		else if (isObject(data)) {

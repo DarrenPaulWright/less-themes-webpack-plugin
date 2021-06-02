@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const singleEntryOptions = require('../webpack.config.js');
 const noHtmlPluginOptions = require('../webpack.noHtmlPlugin.config.js');
 const skipLoadersOptions = require('../webpack.customLoaders.config.js');
+const noThemesOptions = require('../webpack.noThemes.config.js');
 const multiEntryOptions = require('../webpack.multi.config.js');
 const { readFileSync } = require('fs');
 
@@ -108,6 +109,35 @@ describe('Plugin', () => {
 			content: '.test {\n' +
 				'  color: blue;\n' +
 				'  font-size: 2.2rem;\n' +
+				'}\n' +
+				'\n'
+		}]
+	));
+
+	it('should handle no themes option', buildTest(
+		noThemesOptions,
+		[{
+			path: 'src/main.js'
+		}, {
+			path: 'index.html',
+			content: '<!DOCTYPE html>\n' +
+				'<html>\n' +
+				'  <head>\n' +
+				'    <meta charset="utf-8">\n' +
+				'    <title>test</title>\n' +
+				'  <meta name="viewport" content="width=device-width,initial-scale=1"><script defer="defer" src="src/main.js"></script><link href="main.min.css" rel="stylesheet"></head>\n' +
+				'  <body>\n' +
+				'  </body>\n' +
+				'</html>'
+		}, {
+			path: 'main.min.css',
+			content: '.test {\n' +
+				'  color: orange;\n' +
+				'  font-size: 3rem;\n' +
+				'}\n' +
+				'.component {\n' +
+				'  color: orange;\n' +
+				'  font-size: 3rem;\n' +
 				'}\n' +
 				'\n'
 		}]

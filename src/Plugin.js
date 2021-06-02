@@ -15,7 +15,7 @@ const THEME_NAME = 'themes-plugin';
 const defaultOptions = {
 	filename: '[name].min.css',
 	themesPath: '',
-	themes: {},
+	themes: { main: '' },
 	skipLoaders: false
 };
 
@@ -63,7 +63,7 @@ const defaultOptions = {
  *
  * @arg {boolean} [options.skipLoaders=false] - If true then MiniCssExtractPlugin and loaders won't be added. You must provide them in your webpack config.
  *
- * @arg {object} options.themes - Defines which files to import for each different theme. Can handle any amount of nesting. The file extension is not necessary in the file name if the actual file has an extension of `.less`. File definitions can be a string or an array of strings.
+ * @arg {object} [options.themes] - Defines which files to import for each different theme. Can handle any amount of nesting. The file extension is not necessary in the file name if the actual file has an extension of `.less`. File definitions can be a string or an array of strings. If no themes are defined then a single css file will be produced named 'main.min.css'
  *
  * @arg {string} [options.themes.path] - Appends a directory to the current path. Can be specified at any level.
  *
