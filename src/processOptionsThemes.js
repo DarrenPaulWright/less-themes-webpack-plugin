@@ -1,7 +1,6 @@
 const fs = require('fs');
-const { resolve } = require('path');
-
-const LESS_EXT = '.less';
+const { resolve, extname } = require('path');
+const { addLessExtension, normalize } = require('./utils.js');
 
 const isArray = Array.isArray;
 const isString = (value) => typeof value === 'string';
@@ -13,20 +12,19 @@ module.exports = function(optionsThemes, themesPath, skipFileCheck) {
 
 	const saveFile = (filename, currentPath, themeName) => {
 		if (!themes[themeName]) {
-			themes[themeName] = [];
+			themes[themeName] = { files: [] };
 		}
 
-		if (filename.indexOf('.') === -1) {
-			filename += LESS_EXT;
-		}
-
-		const filePath = resolve(currentPath, filename);
+		const filePath = resolve(
+			currentPath,
+			addLessExtension(filename)
+		);
 
 		if (!skipFileCheck && !fs.existsSync(filePath)) {
 			throw new Error('Theme file not found: ' + filePath);
 		}
 
-		themes[themeName].push(filePath);
+		themes[themeName].files.push(filePath);
 	};
 
 	const processBranch = (data, currentPath, themeName, files) => {
@@ -59,7 +57,7 @@ module.exports = function(optionsThemes, themesPath, skipFileCheck) {
 		}
 	};
 
-	processBranch(optionsThemes, themesPath, '', []);
+	processBranch(optionsThemes, normalize(process.cwd(), themesPath), '', []);
 
 	return [themes, Object.keys(themes)];
 };

@@ -1,11 +1,17 @@
-const { resolve } = require('path');
+const { dirname, resolve, relative } = require('path');
+const { writeFileSync } = require('fs');
 const escapeStringRegexp = require('escape-string-regexp');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const processOptionsThemes = require('./processOptionsThemes');
 const HtmlWebpackPlugin = require('safe-require')('html-webpack-plugin');
+const temp = require('temp');
+const mkdirp = require('mkdirp');
+const { buildTempFiles } = require('./utils.js');
 
+temp.track();
+
+const tempDir = temp.mkdirSync();
 const THEME_NAME = 'themes-plugin';
-
 const defaultOptions = {
 	filename: '[name].min.css',
 	themesPath: '',
@@ -139,35 +145,89 @@ const defaultOptions = {
 class ThemesPlugin {
 	constructor(options) {
 		this.options = { ...defaultOptions, ...options };
+
+		const [themes, themeNames] = processOptionsThemes(
+			this.options.themes,
+			this.options.themesPath
+		);
+
+		this._themes = themes;
+		this._themeNames = themeNames;
+	}
+
+	_buildThemeFiles(compiler) {
+		buildTempFiles(tempDir, this._themes)
+			.forEach((file) => {
+				mkdirp.sync(file.dir);
+				writeFileSync(file.location, file.content);
+			});
+	}
+
+	_hasHtmlWebpackPlugin(compiler) {
+		return compiler.options.plugins
+			.some((plugin) => plugin instanceof HtmlWebpackPlugin);
+	}
+
+	_addMiniCssExtractPlugin(compiler, filename) {
+		const miniCssExtractPlugin = new MiniCssExtractPlugin({ filename });
+
+		compiler.options.plugins.push(miniCssExtractPlugin);
+		miniCssExtractPlugin.apply(compiler);
+	}
+
+	_addChunks(compiler) {
+		this._themeNames.forEach((themeName) => {
+			compiler.options.optimization.splitChunks.cacheGroups[themeName] = {
+				test: new RegExp('\.' + escapeStringRegexp(themeName) + '\.less$'),
+				name: themeName,
+				chunks: 'all',
+				enforce: true,
+				reuseExistingChunk: true
+			};
+		});
+	}
+
+	_cleanAssetTagsStyles(tag, data) {
+		if (tag.attributes.href.includes(this._themeNames[0])) {
+			data.assetTags.styles = [tag];
+			return true;
+		}
+	}
+
+	_alterAssetTags(data, callback) {
+		data.assetTags.styles
+			.some((tag) => this._cleanAssetTagsStyles(tag, data));
+
+		callback(null, data);
+	}
+
+	_onCompile(compilation) {
+		HtmlWebpackPlugin
+			.getHooks(compilation)
+			.alterAssetTags
+			.tapAsync(THEME_NAME, this._alterAssetTags.bind(this));
 	}
 
 	apply(compiler) {
-		let themesPath = this.options.themesPath;
-
-		if (themesPath.charAt(0) === '.') {
-			themesPath = resolve(process.cwd(), themesPath);
-		}
-
-		const [themes, themeNames] = processOptionsThemes(this.options.themes, themesPath);
-		let hasHtmlWebpackPlugin = compiler.options.plugins
-			.some((plugin) => plugin instanceof HtmlWebpackPlugin);
+		this._buildThemeFiles(compiler);
 
 		compiler.hooks
 			.environment
 			.tap(THEME_NAME, () => {
 				const sourceMap = this.options.sourceMap || false;
-				const miniCssExtractPlugin = new MiniCssExtractPlugin({
-					filename: this.options.filename
-				});
-				compiler.options.plugins.push(miniCssExtractPlugin);
-				miniCssExtractPlugin.apply(compiler);
 
-				compiler.options.module.rules = compiler.options.module.rules.concat([{
+				this._addMiniCssExtractPlugin(compiler, this.options.filename);
+
+				compiler.options.module.rules.push({
 					test: /\.js$/,
 					loader: resolve(__dirname, 'Loader.js'),
 					enforce: 'pre',
-					options: { themes }
-				}, {
+					options: {
+						themes: this._themes,
+						themeNames: this._themeNames
+					}
+				});
+				compiler.options.module.rules.push({
 					test: /\.less$/,
 					use: [MiniCssExtractPlugin.loader, {
 						loader: 'css-loader',
@@ -182,39 +242,14 @@ class ThemesPlugin {
 						loader: 'less-loader',
 						options: { sourceMap }
 					}]
-				}]);
-
-				themeNames.forEach((themeName) => {
-					compiler.options.optimization.splitChunks.cacheGroups[themeName] = {
-						test: new RegExp('\.' + escapeStringRegexp(themeName) + '\.less$'),
-						name: themeName,
-						chunks: 'all',
-						enforce: true,
-						reuseExistingChunk: true
-					};
 				});
+
+				this._addChunks(compiler);
 			});
 
-		if (hasHtmlWebpackPlugin) {
+		if (this._hasHtmlWebpackPlugin(compiler)) {
 			compiler.hooks.compilation
-				.tap(THEME_NAME, (compilation) => {
-					HtmlWebpackPlugin
-						.getHooks(compilation)
-						.alterAssetTags
-						.tapAsync(THEME_NAME, (data, callback) => {
-							data.assetTags.styles.some((tag) => {
-								if (tag.attributes.href.includes(themeNames[0])) {
-									data.assetTags.styles = [tag];
-									return true;
-								}
-							});
-
-							callback(null, data);
-						});
-				});
-		}
-		else {
-			throw new Error('html-webpack-plugin not found. Required for less-themes-webpack-plugin.');
+				.tap(THEME_NAME, this._onCompile.bind(this));
 		}
 	}
 }

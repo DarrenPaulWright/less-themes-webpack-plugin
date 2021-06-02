@@ -19,7 +19,7 @@ describe('Plugin', () => {
 
 				const files = stats.toJson().assets.map((x) => x.name);
 
-				assert.deepEqual(files.length, expectedFiles.length, 'wrong number of files. actual: ' + JSON.stringify(files));
+				assert.deepEqual(files.length, expectedFiles.length, 'wrong number of files. actual: ' + JSON.stringify(files, null, 4));
 
 				expectedFiles.forEach((expected) => {
 					assert.isTrue(files.includes(expected.path), 'expected file ' + expected.path + ' not found in ' + JSON.stringify(files));
@@ -131,12 +131,10 @@ describe('Plugin', () => {
 				'  color: black;\n' +
 				'  font-size: 1rem;\n' +
 				'}\n' +
-				'\n' +
 				'.test2 {\n' +
 				'  color: black;\n' +
 				'  font-size: 1rem;\n' +
 				'}\n' +
-				'\n' +
 				'.component {\n' +
 				'  color: black;\n' +
 				'  font-size: 1rem;\n' +
@@ -148,12 +146,10 @@ describe('Plugin', () => {
 				'  color: black;\n' +
 				'  font-size: 1.1rem;\n' +
 				'}\n' +
-				'\n' +
 				'.test2 {\n' +
 				'  color: black;\n' +
 				'  font-size: 1.1rem;\n' +
 				'}\n' +
-				'\n' +
 				'.component {\n' +
 				'  color: black;\n' +
 				'  font-size: 1.1rem;\n' +
@@ -165,12 +161,10 @@ describe('Plugin', () => {
 				'  color: white;\n' +
 				'  font-size: 1rem;\n' +
 				'}\n' +
-				'\n' +
 				'.test2 {\n' +
 				'  color: white;\n' +
 				'  font-size: 1rem;\n' +
 				'}\n' +
-				'\n' +
 				'.component {\n' +
 				'  color: white;\n' +
 				'  font-size: 1rem;\n' +
@@ -182,12 +176,10 @@ describe('Plugin', () => {
 				'  color: white;\n' +
 				'  font-size: 1.1rem;\n' +
 				'}\n' +
-				'\n' +
 				'.test2 {\n' +
 				'  color: white;\n' +
 				'  font-size: 1.1rem;\n' +
 				'}\n' +
-				'\n' +
 				'.component {\n' +
 				'  color: white;\n' +
 				'  font-size: 1.1rem;\n' +

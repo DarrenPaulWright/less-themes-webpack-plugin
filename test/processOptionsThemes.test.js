@@ -67,20 +67,28 @@ const structureWithPathAndNestedArrays = {
 };
 
 const simpleStructureOut = {
-	'main.dark.desktop': [
-		basePath + 'main\\light.less',
-		basePath + 'main\\dark.less',
-		basePath + 'main\\desktop.less'
-	],
-	'main.dark.mobile': [
-		basePath + 'main\\light.less', basePath + 'main\\dark.less'
-	],
-	'main.light.desktop': [
-		basePath + 'main\\light.less', basePath + 'main\\desktop.less'
-	],
-	'main.light.mobile': [
-		basePath + 'main\\light.less'
-	]
+	'main.dark.desktop': {
+		files: [
+			basePath + 'main\\light.less',
+			basePath + 'main\\dark.less',
+			basePath + 'main\\desktop.less'
+		]
+	},
+	'main.dark.mobile': {
+		files: [
+			basePath + 'main\\light.less', basePath + 'main\\dark.less'
+		]
+	},
+	'main.light.desktop': {
+		files: [
+			basePath + 'main\\light.less', basePath + 'main\\desktop.less'
+		]
+	},
+	'main.light.mobile': {
+		files: [
+			basePath + 'main\\light.less'
+		]
+	}
 };
 
 const simpleFilesOut = [
@@ -123,38 +131,54 @@ const multipleThemes = {
 };
 
 const multipleThemesOut = {
-	'shared.main.dark.desktop': [
-		basePath + 'shared\\main\\light.less',
-		basePath + 'shared\\main\\dark.less',
-		basePath + 'shared\\main\\desktop.less'
-	],
-	'shared.main.dark.mobile': [
-		basePath + 'shared\\main\\light.less',
-		basePath + 'shared\\main\\dark.less'
-	],
-	'shared.main.light.desktop': [
-		basePath + 'shared\\main\\light.less',
-		basePath + 'shared\\main\\desktop.less'
-	],
-	'shared.main.light.mobile': [
-		basePath + 'shared\\main\\light.less'
-	],
-	'shared.two.dark.desktop': [
-		basePath + 'shared\\differentPath\\light.less',
-		basePath + 'shared\\differentPath\\dark.less',
-		basePath + 'shared\\differentPath\\desktop.less'
-	],
-	'shared.two.dark.mobile': [
-		basePath + 'shared\\differentPath\\light.less',
-		basePath + 'shared\\differentPath\\dark.less'
-	],
-	'shared.two.light.desktop': [
-		basePath + 'shared\\differentPath\\light.less',
-		basePath + 'shared\\differentPath\\desktop.less'
-	],
-	'shared.two.light.mobile': [
-		basePath + 'shared\\differentPath\\light.less'
-	]
+	'shared.main.dark.desktop': {
+		files: [
+			basePath + 'shared\\main\\light.less',
+			basePath + 'shared\\main\\dark.less',
+			basePath + 'shared\\main\\desktop.less'
+		]
+	},
+	'shared.main.dark.mobile': {
+		files: [
+			basePath + 'shared\\main\\light.less',
+			basePath + 'shared\\main\\dark.less'
+		]
+	},
+	'shared.main.light.desktop': {
+		files: [
+			basePath + 'shared\\main\\light.less',
+			basePath + 'shared\\main\\desktop.less'
+		]
+	},
+	'shared.main.light.mobile': {
+		files: [
+			basePath + 'shared\\main\\light.less'
+		]
+	},
+	'shared.two.dark.desktop': {
+		files: [
+			basePath + 'shared\\differentPath\\light.less',
+			basePath + 'shared\\differentPath\\dark.less',
+			basePath + 'shared\\differentPath\\desktop.less'
+		]
+	},
+	'shared.two.dark.mobile': {
+		files: [
+			basePath + 'shared\\differentPath\\light.less',
+			basePath + 'shared\\differentPath\\dark.less'
+		]
+	},
+	'shared.two.light.desktop': {
+		files: [
+			basePath + 'shared\\differentPath\\light.less',
+			basePath + 'shared\\differentPath\\desktop.less'
+		]
+	},
+	'shared.two.light.mobile': {
+		files: [
+			basePath + 'shared\\differentPath\\light.less'
+		]
+	}
 };
 
 const multipleThemesFilesOut = [

@@ -1,53 +1,46 @@
-const { writeFileSync } = require('fs');
-const temp = require('temp');
-const JsFile = require('./JsFile');
-const mkdirp = require('mkdirp');
-
-temp.track();
-
-const files = {};
-const tempDir = temp.mkdirSync();
-
-const findEntryPoint = (module) => {
-	const reason = module && module.reasons && module.reasons[0];
-
-	return (reason && reason.module && reason.module.resource) ?
-		findEntryPoint(reason.module) :
-		module.resource;
-};
-
-const isEntryPoint = (path, module) => {
-	if (!(path in files)) {
-		files[path] = path === findEntryPoint(module);
-	}
-
-	return files[path];
-};
+const {
+	readFileSync,
+	writeFileSync
+} = require('fs');
+const { resolve } = require('path');
+const {
+	stripLessImports,
+	addLessImportsToTheme,
+	addJsImport
+} = require('./utils.js');
 
 module.exports = function(content) {
-	const jsFile = new JsFile(this.resourcePath, content);
+	let [modifiedContent, importFilePaths] = stripLessImports(content);
 
-	if (jsFile.hasLess) {
-		const options = this.query;
+	if (importFilePaths.length !== 0) {
+		const { themes, themeNames } = this.query;
+		const context = this.context;
 
-		jsFile.originalLessFilePaths
-			.forEach((filePath) => {
-				this.addDependency(filePath);
+		importFilePaths = importFilePaths
+			.map((path) => resolve(context, path));
+
+		importFilePaths.forEach((filePath) => {
+			this.addDependency(filePath);
+		});
+
+		themeNames
+			.forEach((themeName) => {
+				const theme = themes[themeName];
+
+				writeFileSync(theme.location, addLessImportsToTheme(
+					readFileSync(theme.location),
+					theme.dir,
+					importFilePaths
+				));
+
+				if (theme.isImported !== true) {
+					theme.isImported = true;
+					modifiedContent = addJsImport(modifiedContent, this.context, theme.location, 0);
+				}
 			});
 
-		jsFile.context(
-			tempDir,
-			this.rootContext,
-			isEntryPoint(this.resourcePath, this._module)
-		);
-
-		for (let themeName in options.themes) {
-			const file = jsFile.addTheme(themeName, options.themes[themeName]);
-
-			mkdirp.sync(file.dir);
-			writeFileSync(file.path, file.content);
-		}
+		return modifiedContent;
 	}
 
-	return jsFile.content;
+	return content;
 };
