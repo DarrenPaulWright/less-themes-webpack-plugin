@@ -15,7 +15,8 @@ const THEME_NAME = 'themes-plugin';
 const defaultOptions = {
 	filename: '[name].min.css',
 	themesPath: '',
-	themes: {}
+	themes: {},
+	skipLoaders: false
 };
 
 /**
@@ -58,7 +59,9 @@ const defaultOptions = {
  *
  * @arg {string} [options.themesPath=''] - The base path to the theme files in `options.themes`.
  *
- * @arg {boolean} [options.sourceMap=false] - This is passed directly into MiniCssExtractPlugin.
+ * @arg {boolean} [options.sourceMap=false] - This is passed directly into MiniCssExtractPlugin and loaders.
+ *
+ * @arg {boolean} [options.skipLoaders=false] - If true then MiniCssExtractPlugin and loaders won't be added. You must provide them in your webpack config.
  *
  * @arg {object} options.themes - Defines which files to import for each different theme. Can handle any amount of nesting. The file extension is not necessary in the file name if the actual file has an extension of `.less`. File definitions can be a string or an array of strings.
  *
@@ -216,8 +219,6 @@ class ThemesPlugin {
 			.tap(THEME_NAME, () => {
 				const sourceMap = this.options.sourceMap || false;
 
-				this._addMiniCssExtractPlugin(compiler, this.options.filename);
-
 				compiler.options.module.rules.push({
 					test: /\.js$/,
 					loader: resolve(__dirname, 'Loader.js'),
@@ -227,22 +228,26 @@ class ThemesPlugin {
 						themeNames: this._themeNames
 					}
 				});
-				compiler.options.module.rules.push({
-					test: /\.less$/,
-					use: [MiniCssExtractPlugin.loader, {
-						loader: 'css-loader',
-						options: { sourceMap }
-					}, {
-						loader: 'postcss-loader',
-						options: {
-							postcssOptions: { config: './' },
-							sourceMap
-						}
-					}, {
-						loader: 'less-loader',
-						options: { sourceMap }
-					}]
-				});
+
+				if (this.options.skipLoaders !== true) {
+					this._addMiniCssExtractPlugin(compiler, this.options.filename);
+					compiler.options.module.rules.push({
+						test: /\.less$/,
+						use: [MiniCssExtractPlugin.loader, {
+							loader: 'css-loader',
+							options: { sourceMap }
+						}, {
+							loader: 'postcss-loader',
+							options: {
+								postcssOptions: { config: './' },
+								sourceMap
+							}
+						}, {
+							loader: 'less-loader',
+							options: { sourceMap }
+						}]
+					});
+				}
 
 				this._addChunks(compiler);
 			});
