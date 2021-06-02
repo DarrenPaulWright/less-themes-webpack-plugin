@@ -7,16 +7,29 @@ const HtmlWebpackPlugin = require('safe-require')('html-webpack-plugin');
 const temp = require('temp');
 const mkdirp = require('mkdirp');
 const { buildTempFiles } = require('./utils.js');
+const { validate } = require('schema-utils');
 
 temp.track();
 
 const tempDir = temp.mkdirSync();
-const THEME_NAME = 'themes-plugin';
+const THEME_NAME = 'less-themes-webpack-plugin';
 const defaultOptions = {
 	filename: '[name].min.css',
 	themesPath: '',
 	themes: { main: '' },
+	sourceMap: false,
 	skipLoaders: false
+};
+const optionsSchema = {
+	type: 'object',
+	properties: {
+		filename: { type: 'string' },
+		themesPath: { type: 'string' },
+		themes: { type: 'object' },
+		sourceMap: { type: 'boolean' },
+		skipLoaders: { type: 'boolean' }
+	},
+	additionalProperties: false
 };
 
 /**
@@ -53,7 +66,7 @@ const defaultOptions = {
  */
 
 /**
- * @arg {object} options
+ * @arg {object} [options]
  *
  * @arg {string} [options.filename=[name].min.css] - The output file name. Replaces [name] with a generated name based on the themes option. In the following example you would get four .css files: <br>• main.light.mobile.min.css <br>• main.light.desktop.min.css <br>• main.dark.mobile.min.css <br>• main.dark.desktop.min.css
  *
@@ -63,7 +76,7 @@ const defaultOptions = {
  *
  * @arg {boolean} [options.skipLoaders=false] - If true then MiniCssExtractPlugin and loaders won't be added. You must provide them in your webpack config.
  *
- * @arg {object} [options.themes] - Defines which files to import for each different theme. Can handle any amount of nesting. The file extension is not necessary in the file name if the actual file has an extension of `.less`. File definitions can be a string or an array of strings. If no themes are defined then a single css file will be produced named 'main.min.css'
+ * @arg {object} [options.themes] - Defines which files to import (as reference) for each different theme. Can handle any amount of nesting. The file extension is not necessary in the file name if the actual file has an extension of `.less`. File definitions can be a string or an array of strings. If no themes are defined then a single css file will be produced named 'main.min.css'
  *
  * @arg {string} [options.themes.path] - Appends a directory to the current path. Can be specified at any level.
  *
@@ -148,6 +161,11 @@ const defaultOptions = {
 class ThemesPlugin {
 	constructor(options) {
 		this.options = { ...defaultOptions, ...options };
+
+		validate(optionsSchema, this.options, {
+			baseDataPath: 'options',
+			name: THEME_NAME
+		});
 
 		const [themes, themeNames] = processOptionsThemes(
 			this.options.themes,

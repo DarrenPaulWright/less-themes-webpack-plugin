@@ -75,6 +75,7 @@
 		"mkdirp": "^1.0.4",
 		"postcss-loader": "^5.2.0",
 		"safe-require": "^1.0.4",
+		"schema-utils": "^3.0.0",
 		"temp": "^0.9.4"
 	},
 	"peerDependencies": {
