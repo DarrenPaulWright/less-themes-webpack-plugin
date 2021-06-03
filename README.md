@@ -20,13 +20,14 @@ npm install less-themes-webpack-plugin --save-dev
 
 ## Compatibility
 Requires:
-- webpack 4+
-- node 8.5.0+
+- webpack 5+
+- node 10+
 
-Since this library uses [postcss-loader](https://github.com/postcss/postcss-loader) you must have a postcss.config.js in the root of your project for this plugin to work.
+For webpack 4 use less-themes-webpack-plugin@1.5.1
 
-You also need to install [Less](https://github.com/less/less.js).
-This way you can control exactly which version you need.
+Since this library uses [postcss-loader](https://github.com/postcss/postcss-loader) you must have a postcss config in the root of your project for this plugin to work.
+
+This library has a peer dependency of [Less](https://github.com/less/less.js).
 
 This plugin automatically adds its own loader and:
 - [mini-css-extract-plugin](https://github.com/webpack-contrib/mini-css-extract-plugin)
@@ -48,11 +49,12 @@ import './stylesForThisFile.less';
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| options | <code>object</code> |  |  |
+| [options] | <code>object</code> |  |  |
 | [options.filename] | <code>string</code> | <code>&quot;[name].min.css&quot;</code> | The output file name. Replaces [name] with a generated name based on the themes option. In the following example you would get four .css files: <br>• main.light.mobile.min.css <br>• main.light.desktop.min.css <br>• main.dark.mobile.min.css <br>• main.dark.desktop.min.css |
 | [options.themesPath] | <code>string</code> | <code>&quot;&#x27;&#x27;&quot;</code> | The base path to the theme files in `options.themes`. |
-| [options.sourceMap] | <code>boolean</code> | <code>false</code> | This is passed directly into MiniCssExtractPlugin. |
-| options.themes | <code>object</code> |  | Defines which files to import for each different theme. Can handle any amount of nesting. The file extension is not necessary in the file name if the actual file has an extension of `.less`. File definitions can be a string or an array of strings. |
+| [options.sourceMap] | <code>boolean</code> | <code>false</code> | This is passed directly into MiniCssExtractPlugin and loaders. |
+| [options.skipLoaders] | <code>boolean</code> | <code>false</code> | If true then MiniCssExtractPlugin and loaders won't be added. You must provide them in your webpack config. |
+| [options.themes] | <code>object</code> |  | Defines which files to import (as reference) for each different theme. Can handle any amount of nesting. The file extension is not necessary in the file name if the actual file has an extension of `.less`. File definitions can be a string or an array of strings. If no themes are defined then a single css file will be produced named 'main.min.css' |
 | [options.themes.path] | <code>string</code> |  | Appends a directory to the current path. Can be specified at any level. |
 | [options.themes.include] | <code>string</code>, <code>array</code> |  | Appends another directory to the current path. Can be specified at any level. |
 
