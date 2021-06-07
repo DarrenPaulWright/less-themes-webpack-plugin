@@ -61,19 +61,19 @@
 		"postpublish": "git push --follow-tags",
 		"pre-clean": "rm -rf node_modules && del /f package-lock.json",
 		"clean": "npm run pre-clean && npm install && npm audit fix",
-		"update": "ncu -u && git diff --quiet || npm install && npm audit fix",
+		"update": "ncu -u --dep dev,prod && git diff --quiet || npm install && npm audit fix",
 		"update-clean": "npm run pre-clean && npm run update",
 		"update-commit": "npm run update && npm test && git add --all && git diff HEAD --quiet || git commit -m \"Updating dependencies\"",
 		"update-patch": "npm run update && npm test && git add --all && git diff HEAD --quiet || git commit -m \"Updating dependencies\" && npm version patch",
 		"docs": "jsdoc2md src/Plugin.js > README.md -t node_modules/dmd-readable/docs.hbs --plugin dmd-readable"
 	},
 	"dependencies": {
-		"css-loader": "^5.2.4",
+		"css-loader": "^5.2.6",
 		"escape-string-regexp": "^4.0.0",
-		"less-loader": "^8.1.1",
+		"less-loader": "^9.0.0",
 		"mini-css-extract-plugin": "^1.6.0",
 		"mkdirp": "^1.0.4",
-		"postcss-loader": "^5.2.0",
+		"postcss-loader": "^5.3.0",
 		"safe-require": "^1.0.4",
 		"schema-utils": "^3.0.0",
 		"temp": "^0.9.4"
@@ -82,17 +82,17 @@
 		"less": "^1.0.0"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.14.0",
-		"@babel/preset-env": "^7.14.1",
-		"autoprefixer": "^10.2.5",
+		"@babel/core": "^7.14.3",
+		"@babel/preset-env": "^7.14.4",
+		"autoprefixer": "^10.2.6",
 		"babel-loader": "^8.2.2",
 		"chai": "^4.3.4",
 		"clean-webpack-plugin": "^4.0.0-alpha.0",
-		"dmd-readable": "^1.2.3",
+		"dmd-readable": "^1.2.4",
 		"html-webpack-plugin": "^5.3.1",
 		"jsdoc-to-markdown": "^7.0.1",
 		"less": "^4.1.1",
 		"mocha": "^8.4.0",
-		"webpack": "^5.36.2"
+		"webpack": "^5.38.1"
 	}
 }
