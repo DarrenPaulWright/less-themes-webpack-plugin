@@ -33,6 +33,17 @@ const optionsSchema = {
 };
 
 /**
+ * Can handle any amount of nesting. The file extension is not necessary in the file name if the actual file has an extension of `.less`. File definitions can be a string or an array of strings.
+ *
+ * @typedef {object|string|string[]} themeDef
+ *
+ * @property {string} [path] - Appends a directory to the current path. Can be specified at any level.
+ * @property {string|string[]} [include] - Appends another directory to the current path. Can be specified at any level.
+ * @property {boolean} [isReference=true] - Imports files in this chunk as a reference. Applies to all children objects unless overridden by the child.
+ * @property {themeDef} [*] - Nested theme def. The key name is added to the theme name, dot delimited.
+ */
+
+/**
  * @name Installation
  * @summary
  *
@@ -66,21 +77,17 @@ const optionsSchema = {
  */
 
 /**
- * @arg {object} [options]
+ * @param {object} [options]
  *
- * @arg {string} [options.filename=[name].min.css] - The output file name. Replaces [name] with a generated name based on the themes option. In the following example you would get four .css files: <br>• main.light.mobile.min.css <br>• main.light.desktop.min.css <br>• main.dark.mobile.min.css <br>• main.dark.desktop.min.css
+ * @param {string} [options.filename=[name].min.css] - The output file name. Replaces [name] with a generated name based on the themes option. In the following example you would get four .css files: <br>• main.light.mobile.min.css <br>• main.light.desktop.min.css <br>• main.dark.mobile.min.css <br>• main.dark.desktop.min.css
  *
- * @arg {string} [options.themesPath=''] - The base path to the theme files in `options.themes`.
+ * @param {string} [options.themesPath=''] - The base path to the theme files in `options.themes`.
  *
- * @arg {boolean} [options.sourceMap=false] - This is passed directly into MiniCssExtractPlugin and loaders.
+ * @param {boolean} [options.sourceMap=false] - This is passed directly into MiniCssExtractPlugin and loaders.
  *
- * @arg {boolean} [options.skipLoaders=false] - If true then MiniCssExtractPlugin and loaders won't be added. You must provide them in your webpack config.
+ * @param {boolean} [options.skipLoaders=false] - If true then MiniCssExtractPlugin and loaders won't be added. You must provide them in your webpack config.
  *
- * @arg {object} [options.themes] - Defines which files to import (as reference) for each different theme. Can handle any amount of nesting. The file extension is not necessary in the file name if the actual file has an extension of `.less`. File definitions can be a string or an array of strings. If no themes are defined then a single css file will be produced named 'main.min.css'
- *
- * @arg {string} [options.themes.path] - Appends a directory to the current path. Can be specified at any level.
- *
- * @arg {string|array} [options.themes.include] - Appends another directory to the current path. Can be specified at any level.
+ * @param {themeDef} [options.themes] - Defines which files to import for each different theme. If no themes are defined then a single css file will be produced named 'main.min.css'
  *
  * @name Usage
  * @summary

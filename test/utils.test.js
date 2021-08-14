@@ -127,27 +127,51 @@ const something = "";
 	});
 
 	describe('buildTempFiles', () => {
-		it('should not add reference', () => {
+		it('should not add reference when appropriate', () => {
 			const result = utils.buildTempFiles('../dist', {
 				'light': {
-					files: ['./styles/variables.less', './styles/light.less']
+					files: [{
+						path: './styles/variables.less',
+						isReference: false
+					}, {
+						path: './styles/light.less',
+						isReference: false
+					}]
 				},
 				'dark': {
-					files: ['./styles/variables.less', './styles/dark.less']
+					files: [{
+						path: './styles/variables.less',
+						isReference: true
+					}, {
+						path: './styles/dark.less',
+						isReference: true
+					}]
 				}
 			});
 
 			assert.deepEqual(result, [{
 				location: resolve(process.cwd(), '../dist/light.less'),
 				dir: resolve(process.cwd(), '../dist'),
-				files: ['./styles/variables.less', './styles/light.less'],
-				content: `@import (less, reference) "../less-themes-webpack-plugin/styles/variables.less";
-@import (less, reference) "../less-themes-webpack-plugin/styles/light.less";
+				files: [{
+					path: './styles/variables.less',
+					isReference: false
+				}, {
+					path: './styles/light.less',
+					isReference: false
+				}],
+				content: `@import (less) "../less-themes-webpack-plugin/styles/variables.less";
+@import (less) "../less-themes-webpack-plugin/styles/light.less";
 `
 			}, {
 				location: resolve(process.cwd(), '../dist/dark.less'),
 				dir: resolve(process.cwd(), '../dist'),
-				files: ['./styles/variables.less', './styles/dark.less'],
+				files: [{
+					path: './styles/variables.less',
+					isReference: true
+				}, {
+					path: './styles/dark.less',
+					isReference: true
+				}],
 				content: `@import (less, reference) "../less-themes-webpack-plugin/styles/variables.less";
 @import (less, reference) "../less-themes-webpack-plugin/styles/dark.less";
 `

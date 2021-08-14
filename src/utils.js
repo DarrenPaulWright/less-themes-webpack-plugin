@@ -88,7 +88,7 @@ const utils = {
 				return {
 					...theme,
 					content: theme.files
-						.map((path) => utils.buildLessImport(dir, path, true))
+						.map((file) => utils.buildLessImport(dir, file.path, file.isReference))
 						.join('')
 				};
 			});

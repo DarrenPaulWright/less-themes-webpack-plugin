@@ -10,7 +10,7 @@ const isFile = (value) => isString(value) || isArray(value);
 module.exports = function(optionsThemes, themesPath, skipFileCheck) {
 	const themes = {};
 
-	const saveFile = (filename, currentPath, themeName) => {
+	const saveFile = (filename, currentPath, themeName, isReference) => {
 		if (!themes[themeName]) {
 			themes[themeName] = { files: [] };
 		}
@@ -25,15 +25,18 @@ module.exports = function(optionsThemes, themesPath, skipFileCheck) {
 				throw new Error('Theme file not found: ' + filePath);
 			}
 
-			themes[themeName].files.push(filePath);
+			themes[themeName].files.push({
+				path: filePath,
+				isReference
+			});
 		}
 	};
 
-	const processBranch = (data, currentPath, themeName, files) => {
+	const processBranch = (data, currentPath, themeName, files, isReference) => {
 		if (isFile(data)) {
 			files.concat(data)
 				.forEach((filename) => {
-					saveFile(filename, currentPath, themeName);
+					saveFile(filename, currentPath, themeName, isReference);
 				});
 		}
 		else if (isObject(data)) {
@@ -47,19 +50,24 @@ module.exports = function(optionsThemes, themesPath, skipFileCheck) {
 				delete data.include;
 			}
 
+			if ('isReference' in data) {
+				isReference = data.isReference;
+			}
+
 			Object.keys(data)
 				.forEach((key) => {
 					processBranch(
 						data[key],
 						currentPath,
 						themeName + (themeName ? '.' : '') + key,
-						files
+						files,
+						isReference
 					);
 				});
 		}
 	};
 
-	processBranch(optionsThemes, normalize(process.cwd(), themesPath), '', []);
+	processBranch(optionsThemes, normalize(process.cwd(), themesPath), '', [], true);
 
 	return [themes, Object.keys(themes)];
 };

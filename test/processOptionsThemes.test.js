@@ -24,6 +24,29 @@ const simpleStructure = {
 	}
 };
 
+const simpleStructureWithReference = {
+	main: {
+		isReference: false,
+		light: {
+			isReference: true,
+			mobile: [
+				'main/light.less'
+			],
+			desktop: [
+				'main/light.less', 'main/desktop.less'
+			]
+		},
+		dark: {
+			mobile: [
+				'main/light.less', 'main/dark.less'
+			],
+			desktop: [
+				'main/light.less', 'main/dark.less', 'main/desktop.less'
+			]
+		}
+	}
+};
+
 const structureWithPath = {
 	main: {
 		path: 'main',
@@ -68,26 +91,79 @@ const structureWithPathAndNestedArrays = {
 
 const simpleStructureOut = {
 	'main.dark.desktop': {
-		files: [
-			basePath + 'main\\light.less',
-			basePath + 'main\\dark.less',
-			basePath + 'main\\desktop.less'
-		]
+		files: [{
+			path: basePath + 'main\\light.less',
+			isReference: true
+		}, {
+			path: basePath + 'main\\dark.less',
+			isReference: true
+		}, {
+			path: basePath + 'main\\desktop.less',
+			isReference: true
+		}]
 	},
 	'main.dark.mobile': {
-		files: [
-			basePath + 'main\\light.less', basePath + 'main\\dark.less'
-		]
+		files: [{
+			path: basePath + 'main\\light.less',
+			isReference: true
+		}, {
+			path: basePath + 'main\\dark.less',
+			isReference: true
+		}]
 	},
 	'main.light.desktop': {
-		files: [
-			basePath + 'main\\light.less', basePath + 'main\\desktop.less'
-		]
+		files: [{
+			path: basePath + 'main\\light.less',
+			isReference: true
+		}, {
+			path: basePath + 'main\\desktop.less',
+			isReference: true
+		}]
 	},
 	'main.light.mobile': {
-		files: [
-			basePath + 'main\\light.less'
-		]
+		files: [{
+			path: basePath + 'main\\light.less',
+			isReference: true
+		}]
+	}
+};
+
+const simpleStructureWithReferenceOut = {
+	'main.dark.desktop': {
+		files: [{
+			path: basePath + 'main\\light.less',
+			isReference: false
+		}, {
+			path: basePath + 'main\\dark.less',
+			isReference: false
+		}, {
+			path: basePath + 'main\\desktop.less',
+			isReference: false
+		}]
+	},
+	'main.dark.mobile': {
+		files: [{
+			path: basePath + 'main\\light.less',
+			isReference: false
+		}, {
+			path: basePath + 'main\\dark.less',
+			isReference: false
+		}]
+	},
+	'main.light.desktop': {
+		files: [{
+			path: basePath + 'main\\light.less',
+			isReference: true
+		}, {
+			path: basePath + 'main\\desktop.less',
+			isReference: true
+		}]
+	},
+	'main.light.mobile': {
+		files: [{
+			path: basePath + 'main\\light.less',
+			isReference: true
+		}]
 	}
 };
 
@@ -132,52 +208,76 @@ const multipleThemes = {
 
 const multipleThemesOut = {
 	'shared.main.dark.desktop': {
-		files: [
-			basePath + 'shared\\main\\light.less',
-			basePath + 'shared\\main\\dark.less',
-			basePath + 'shared\\main\\desktop.less'
-		]
+		files: [{
+			path: basePath + 'shared\\main\\light.less',
+			isReference: true
+		}, {
+			path: basePath + 'shared\\main\\dark.less',
+			isReference: true
+		}, {
+			path: basePath + 'shared\\main\\desktop.less',
+			isReference: true
+		}]
 	},
 	'shared.main.dark.mobile': {
-		files: [
-			basePath + 'shared\\main\\light.less',
-			basePath + 'shared\\main\\dark.less'
-		]
+		files: [{
+			path: basePath + 'shared\\main\\light.less',
+			isReference: true
+		}, {
+			path: basePath + 'shared\\main\\dark.less',
+			isReference: true
+		}]
 	},
 	'shared.main.light.desktop': {
-		files: [
-			basePath + 'shared\\main\\light.less',
-			basePath + 'shared\\main\\desktop.less'
-		]
+		files: [{
+			path: basePath + 'shared\\main\\light.less',
+			isReference: true
+		}, {
+			path: basePath + 'shared\\main\\desktop.less',
+			isReference: true
+		}]
 	},
 	'shared.main.light.mobile': {
-		files: [
-			basePath + 'shared\\main\\light.less'
-		]
+		files: [{
+			path: basePath + 'shared\\main\\light.less',
+			isReference: true
+		}]
 	},
 	'shared.two.dark.desktop': {
-		files: [
-			basePath + 'shared\\differentPath\\light.less',
-			basePath + 'shared\\differentPath\\dark.less',
-			basePath + 'shared\\differentPath\\desktop.less'
-		]
+		files: [{
+			path: basePath + 'shared\\differentPath\\light.less',
+			isReference: true
+		}, {
+			path: basePath + 'shared\\differentPath\\dark.less',
+			isReference: true
+		}, {
+			path: basePath + 'shared\\differentPath\\desktop.less',
+			isReference: true
+		}]
 	},
 	'shared.two.dark.mobile': {
-		files: [
-			basePath + 'shared\\differentPath\\light.less',
-			basePath + 'shared\\differentPath\\dark.less'
-		]
+		files: [{
+			path: basePath + 'shared\\differentPath\\light.less',
+			isReference: true
+		}, {
+			path: basePath + 'shared\\differentPath\\dark.less',
+			isReference: true
+		}]
 	},
 	'shared.two.light.desktop': {
-		files: [
-			basePath + 'shared\\differentPath\\light.less',
-			basePath + 'shared\\differentPath\\desktop.less'
-		]
+		files: [{
+			path: basePath + 'shared\\differentPath\\light.less',
+			isReference: true
+		}, {
+			path: basePath + 'shared\\differentPath\\desktop.less',
+			isReference: true
+		}]
 	},
 	'shared.two.light.mobile': {
-		files: [
-			basePath + 'shared\\differentPath\\light.less'
-		]
+		files: [{
+			path: basePath + 'shared\\differentPath\\light.less',
+			isReference: true
+		}]
 	}
 };
 
@@ -219,6 +319,13 @@ describe('processOptionsThemes', () => {
 		assert.deepEqual(
 			processOptionsThemes(structureWithPathAndNestedArrays, basePath, true),
 			[simpleStructureOut, simpleFilesOut]
+		);
+	});
+
+	it('should return a processed object with appropriate references', () => {
+		assert.deepEqual(
+			processOptionsThemes(simpleStructureWithReference, basePath, true),
+			[simpleStructureWithReferenceOut, simpleFilesOut]
 		);
 	});
 
