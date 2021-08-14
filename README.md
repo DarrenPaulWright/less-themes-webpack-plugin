@@ -54,9 +54,7 @@ import './stylesForThisFile.less';
 | [options.themesPath] | <code>string</code> | <code>&quot;&#x27;&#x27;&quot;</code> | The base path to the theme files in `options.themes`. |
 | [options.sourceMap] | <code>boolean</code> | <code>false</code> | This is passed directly into MiniCssExtractPlugin and loaders. |
 | [options.skipLoaders] | <code>boolean</code> | <code>false</code> | If true then MiniCssExtractPlugin and loaders won't be added. You must provide them in your webpack config. |
-| [options.themes] | <code>object</code> |  | Defines which files to import (as reference) for each different theme. Can handle any amount of nesting. The file extension is not necessary in the file name if the actual file has an extension of `.less`. File definitions can be a string or an array of strings. If no themes are defined then a single css file will be produced named 'main.min.css' |
-| [options.themes.path] | <code>string</code> |  | Appends a directory to the current path. Can be specified at any level. |
-| [options.themes.include] | <code>string</code>, <code>array</code> |  | Appends another directory to the current path. Can be specified at any level. |
+| [options.themes] | [<code>themeDef</code>](#themeDef) |  | Defines which files to import for each different theme. If no themes are defined then a single css file will be produced named 'main.min.css' |
 
 **Example**  
 ```javascript
@@ -125,6 +123,21 @@ module.exports = {
    ]
 };
 ```
+
+<br><a name="themeDef"></a>
+
+## themeDef : <code>object</code> \| <code>string</code> \| <code>Array.&lt;string&gt;</code>
+> Can handle any amount of nesting. The file extension is not necessary in the file name if the actual file has an extension of `.less`. File definitions can be a string or an array of strings.
+
+**Properties**
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| [path] | <code>string</code> |  | Appends a directory to the current path. Can be specified at any level. |
+| [include] | <code>string</code> \| <code>Array.&lt;string&gt;</code> |  | Appends another directory to the current path. Can be specified at any level. |
+| [isReference] | <code>boolean</code> | <code>true</code> | Imports files in this chunk as a reference. Applies to all children objects unless overridden by the child. |
+| [*] | [<code>themeDef</code>](#themeDef) |  | Nested theme def. The key name is added to the theme name, dot delimited. |
+
 
 [npm]: https://img.shields.io/npm/v/less-themes-webpack-plugin.svg
 [npm-url]: https://npmjs.com/package/less-themes-webpack-plugin
