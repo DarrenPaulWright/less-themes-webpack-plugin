@@ -69,7 +69,6 @@
 	},
 	"dependencies": {
 		"css-loader": "^5.2.6",
-		"escape-string-regexp": "^4.0.0",
 		"less-loader": "^9.0.0",
 		"mini-css-extract-plugin": "^1.6.0",
 		"mkdirp": "^1.0.4",

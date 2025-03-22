@@ -1,6 +1,5 @@
 const { dirname, resolve, relative } = require('path');
 const { writeFileSync } = require('fs');
-const escapeStringRegexp = require('escape-string-regexp');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const processOptionsThemes = require('./processOptionsThemes');
 const HtmlWebpackPlugin = require('safe-require')('html-webpack-plugin');
@@ -30,6 +29,12 @@ const optionsSchema = {
 		skipLoaders: { type: 'boolean' }
 	},
 	additionalProperties: false
+};
+
+const escapeStringRegexp = (string) => {
+	return string
+		.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
+		.replace(/-/g, '\\x2d');
 };
 
 /**
