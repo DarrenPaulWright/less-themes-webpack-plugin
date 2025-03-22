@@ -197,8 +197,9 @@ class ThemesPlugin {
 	}
 
 	_hasHtmlWebpackPlugin(compiler) {
-		return compiler.options.plugins
-			.some((plugin) => plugin instanceof HtmlWebpackPlugin);
+		return HtmlWebpackPlugin !== undefined &&
+			compiler.options.plugins
+				.some((plugin) => plugin instanceof HtmlWebpackPlugin);
 	}
 
 	_addMiniCssExtractPlugin(compiler, filename) {
