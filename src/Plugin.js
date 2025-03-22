@@ -251,7 +251,7 @@ class ThemesPlugin {
 				const sourceMap = this.options.sourceMap || false;
 
 				compiler.options.module.rules.push({
-					test: /\.js$/,
+					test: /\.(js|jsx|ts|tsx)$/,
 					loader: resolve(__dirname, 'Loader.js'),
 					enforce: 'pre',
 					options: {
