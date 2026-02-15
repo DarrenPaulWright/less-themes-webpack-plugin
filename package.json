@@ -68,13 +68,13 @@
 		"docs": "jsdoc2md src/Plugin.js > README.md -t node_modules/dmd-readable/docs.hbs --plugin dmd-readable"
 	},
 	"dependencies": {
-		"css-loader": "^5.2.6",
+		"css-loader": "^6.0.0",
 		"less-loader": "^9.0.0",
-		"mini-css-extract-plugin": "^1.6.0",
+		"mini-css-extract-plugin": "^2.4.5",
 		"mkdirp": "^1.0.4",
 		"postcss-loader": "^5.3.0",
 		"safe-require": "^1.0.4",
-		"schema-utils": "^3.0.0",
+		"schema-utils": "^4.0.0",
 		"temp": "^0.9.4"
 	},
 	"peerDependencies": {
